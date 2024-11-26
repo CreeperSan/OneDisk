@@ -1,4 +1,5 @@
 .idea
 
-config.json
+config.yaml
 log
+log/*

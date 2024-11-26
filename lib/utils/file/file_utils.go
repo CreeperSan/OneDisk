@@ -1,10 +1,11 @@
-package file
+package fileutils
 
 import "os"
 
+// Exists
 // 检查文件是否存在
 // check file exists
-func fileUtilsExists(filePath string) bool {
+func Exists(filePath string) bool {
 	_, err := os.Stat(filePath)
 	if os.IsNotExist(err) {
 		return false
@@ -12,9 +13,10 @@ func fileUtilsExists(filePath string) bool {
 	return err == nil
 }
 
+// CreateFile
 // 创建文件
 // create file
-func fileUtilsCreateFile(filePath string) bool {
+func CreateFile(filePath string) bool {
 	// create file
 	f, err := os.Create(filePath)
 	if err != nil {
@@ -24,11 +26,12 @@ func fileUtilsCreateFile(filePath string) bool {
 	return err == nil
 }
 
+// CreateFileIfNotExist
 // 如果文件不存在创建文件
 // create file if not exists
-func fileUtilsCreateFileIfNotExist(filePath string) bool {
-	if fileUtilsExists(filePath) {
+func CreateFileIfNotExist(filePath string) bool {
+	if Exists(filePath) {
 		return true
 	}
-	return fileUtilsCreateFile(filePath)
+	return CreateFile(filePath)
 }

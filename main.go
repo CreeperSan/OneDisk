@@ -24,17 +24,17 @@ func main() {
 		return
 	}
 
-	// 服务器配置初始化
-	err = server.Initialize()
-	if err != nil {
-		lifecycle.Exit(definition.ExitCodeServerInitialize)
-		return
-	}
-
 	// 数据库配置初始化
 	err = database.Initialize()
 	if err != nil {
 		lifecycle.Exit(definition.ExitCodeDatabaseInitialize)
+		return
+	}
+
+	// 服务器配置初始化
+	err = server.Initialize()
+	if err != nil {
+		lifecycle.Exit(definition.ExitCodeServerInitialize)
 		return
 	}
 

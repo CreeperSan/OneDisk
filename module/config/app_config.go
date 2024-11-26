@@ -1,20 +1,44 @@
 package config
 
-type Config struct {
+import "OneDisk/lib/format"
+
+// Server
+// 应用配置 - 服务器配置
+type Server struct {
+	Host string `yaml:"host"`
+	Port int    `yaml:"port"`
+}
+
+func (s Server) String() string {
+	return format.String("Server{Host=%s, Port=%d}", s.Host, s.Port)
+}
+
+// Database
+// 应用配置 - 数据库配置
+type Database struct {
+	Type     string `yaml:"type"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+	Path     string `yaml:"path"`
+}
+
+func (d Database) String() string {
+	return format.String("Database{Type=%s, Host=%s, Port=%d, Username=%s, Password=%s, Path=%s}", d.Type, d.Host, d.Port, d.Username, d.Password, d.Path)
+}
+
+// AppConfig
+// 应用配置
+type AppConfig struct {
 
 	// 服务器信息配置
-	Server struct {
-		Host string `yaml:"host"`
-		Port int    `yaml:"port"`
-	} `yaml:"server"`
+	Server Server `yaml:"server"`
 
 	// 数据库
-	Database struct {
-		Type     string `yaml:"type"`
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		Username string `yaml:"username"`
-		Password string `yaml:"password"`
-		Path     string `yaml:"path"`
-	} `yaml:"database"`
+	Database Database `yaml:"database"`
+}
+
+func (a AppConfig) String() string {
+	return format.String("AppConfig{Server=%s, Database=%s}", a.Server, a.Database)
 }

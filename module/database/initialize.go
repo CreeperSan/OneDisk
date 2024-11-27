@@ -6,7 +6,9 @@ import (
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
 	"OneDisk/lib/random"
+	timeutils "OneDisk/lib/utils/time"
 	"OneDisk/module/config"
+	"errors"
 	"fmt"
 	sqliteEncrypt "github.com/hinha/gorm-sqlite-cipher"
 	"go.uber.org/zap"
@@ -64,6 +66,34 @@ func Initialize() error {
 	if err != nil {
 		log.Error(tag, "Failed to upgrade database", zap.Error(err))
 		return err
+	}
+
+	// 初始化管理员账户
+	var queryAdminUser []User
+	db.Where(formatstring.String("%s = ?", columnUserID), valueUserTypeAdmin).Find(&queryAdminUser)
+	if queryAdminUser == nil || len(queryAdminUser) <= 0 {
+		log.Info(tag, "No administrator account found, creating...")
+		fmt.Println("You haven't created an administrator account yet.")
+		fmt.Println("Please enter administrator username:")
+		inputAdminUsername := input.ReadString()
+		fmt.Println("Please enter administrator password:")
+		inputAdminPassword := input.ReadString()
+		tmpAdminUser := User{
+			Username:   inputAdminUsername,
+			Nickname:   inputAdminUsername,
+			Password:   formatstring.Password(inputAdminPassword),
+			Type:       valueUserTypeAdmin,
+			CreateTime: timeutils.Timestamp(),
+		}
+		resultInsert := db.Create(&tmpAdminUser)
+		if resultInsert.Error != nil {
+			log.Error(tag, "Failed to create administrator account", zap.Error(resultInsert.Error))
+			return err
+		}
+		log.Info(tag, "Administrator account created successfully!", zap.String("username", inputAdminUsername))
+	} else if queryAdminUser != nil && len(queryAdminUser) > 1 {
+		log.Error(tag, "More than one administrator account found!")
+		return errors.New("can not have more than one administrator account, please check the database")
 	}
 
 	database = db

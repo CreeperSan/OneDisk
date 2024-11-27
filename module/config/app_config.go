@@ -1,6 +1,8 @@
 package config
 
-import "OneDisk/lib/format"
+import (
+	string2 "OneDisk/lib/format/formatstring"
+)
 
 // Server
 // 应用配置 - 服务器配置
@@ -10,22 +12,19 @@ type Server struct {
 }
 
 func (s Server) String() string {
-	return format.String("Server{Host=%s, Port=%d}", s.Host, s.Port)
+	return string2.String("Server{Host=%s, Port=%d}", s.Host, s.Port)
 }
 
 // Database
 // 应用配置 - 数据库配置
 type Database struct {
 	Type     string `yaml:"type"`
-	Host     string `yaml:"host"`
-	Port     int    `yaml:"port"`
-	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Path     string `yaml:"path"`
 }
 
 func (d Database) String() string {
-	return format.String("Database{Type=%s, Host=%s, Port=%d, Username=%s, Password=%s, Path=%s}", d.Type, d.Host, d.Port, d.Username, d.Password, d.Path)
+	return string2.String("Database{Type=%s, Path=%s}", d.Type, d.Path)
 }
 
 // AppConfig
@@ -40,5 +39,5 @@ type AppConfig struct {
 }
 
 func (a AppConfig) String() string {
-	return format.String("AppConfig{Server=%s, Database=%s}", a.Server, a.Database)
+	return string2.String("AppConfig{Server=%s, Database=%s}", a.Server, a.Database)
 }

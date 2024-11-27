@@ -12,6 +12,8 @@ import (
 const tag = "Config"
 
 func Initialize() error {
+	log.Info(tag, "Config initializing...")
+
 	const pathConfig = definition.PathConfig
 	// 文件检查
 	if !fileutils.Exists(pathConfig) {
@@ -37,5 +39,7 @@ func Initialize() error {
 		log.Error(tag, "Failed to unmarshal config.yaml")
 		return err
 	}
+
+	log.Info(tag, "Config initialized successfully")
 	return nil
 }

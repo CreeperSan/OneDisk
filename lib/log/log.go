@@ -2,7 +2,7 @@ package log
 
 import (
 	"OneDisk/lib/definition"
-	"OneDisk/lib/format"
+	string2 "OneDisk/lib/format/formatstring"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -99,6 +99,6 @@ func AppStart() {
 	Info(tag, " | |_| || | | ||  __/| |_| || |\\__ \\|   <")
 	Info(tag, "  \\___/ |_| |_| \\___||____/ |_||___/|_|\\_\\")
 	Info(tag, "============================================")
-	Info(tag, format.String("Welcome to OneDisk %s (%d)", definition.VersionName, definition.VersionCode))
+	Info(tag, string2.String("Welcome to OneDisk %s (%d)", definition.VersionName, definition.VersionCode))
 	Info(tag, "Application is starting...")
 }

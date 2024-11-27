@@ -1,7 +1,7 @@
 package server
 
 import (
-	"OneDisk/lib/format"
+	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
@@ -21,7 +21,7 @@ func Initialize() error {
 		log.Info(tag, "Server host name not define, waiting for enter ...")
 		fmt.Println("Please enter server host name:")
 		inputHostName := input.ReadString()
-		log.Info(tag, format.String("You have entered server host name: %s", inputHostName))
+		log.Info(tag, string2.String("You have entered server host name: %s", inputHostName))
 		if len(inputHostName) <= 0 {
 			log.Error(tag, "The server host name you have entered is invalid")
 			return fmt.Errorf("server host name can not be empty")
@@ -39,7 +39,7 @@ func Initialize() error {
 		log.Info(tag, "Server port not define, waiting for enter ...")
 		fmt.Println("Please enter server port:")
 		inputPort := input.ReadInt()
-		log.Info(tag, format.String("You have entered server port: %d", inputPort))
+		log.Info(tag, string2.String("You have entered server port: %d", inputPort))
 		if inputPort <= 0 {
 			log.Error(tag, "The server port you have entered is invalid")
 			return fmt.Errorf("server port can not be empty")

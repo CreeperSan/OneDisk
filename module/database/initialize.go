@@ -11,6 +11,7 @@ import (
 	sqliteEncrypt "github.com/hinha/gorm-sqlite-cipher"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
+	"strings"
 )
 
 var tag = "Database"
@@ -30,10 +31,14 @@ func Initialize() error {
 		// 配置路径（目前暂不支持自定义）
 		configDatabase.Path = definition.PathDatabase
 		// 配置密码
-		fmt.Println("Please enter your database password (leave empty will pick random password):")
+		fmt.Println("Please enter your database password:")
 		inputPassword := input.ReadString()
 		if len(inputPassword) <= 0 {
-			inputPassword = random.Password(20)
+			fmt.Println("Are you sure to use no password? (enter y to confirm or any other key to generate a random password)")
+			inputConfirmNoPassword := strings.ToLower(input.ReadString())
+			if inputConfirmNoPassword != "y" { // 如果没有确认使用空密码，则随机生成32位密码
+				inputPassword = random.Password(32)
+			}
 		}
 		configDatabase.Password = inputPassword
 
@@ -54,12 +59,12 @@ func Initialize() error {
 	}
 
 	// 数据库升级gorm
-	//log.Info(tag, "Checking database update...")
-	//err = upgradeDatabase(db)
-	//if err != nil {
-	//	log.Error(tag, "Failed to upgrade database", zap.Error(err))
-	//	return err
-	//}
+	log.Info(tag, "Checking database update...")
+	err = checkAndUpgradeVersion(db)
+	if err != nil {
+		log.Error(tag, "Failed to upgrade database", zap.Error(err))
+		return err
+	}
 
 	database = db
 

@@ -5,6 +5,7 @@ import (
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
+	apimiddleware "OneDisk/module/server/api/middleware"
 	apiv1user "OneDisk/module/server/api/v1"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -67,6 +68,9 @@ func StartServer() error {
 			"message": "pong",
 		})
 	})
+
+	// 公共中间件
+	r.Use(apimiddleware.HeaderConvert())
 
 	// V1 版本的用户接口
 	apiv1user.Register(r)

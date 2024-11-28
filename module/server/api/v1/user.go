@@ -24,7 +24,7 @@ func Register(server *gin.Engine) {
 	/* 认证 - 校验Token */
 	server.POST(
 		"/api/user/v1/auth/token",
-		apimiddleware.Auth(),
+		apimiddleware.AuthToken(),
 		func(context *gin.Context) {
 			// 中间件已经处理，可以直接返回
 			context.JSON(httpcode.OK, gin.H{

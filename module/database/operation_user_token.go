@@ -78,6 +78,7 @@ func UserTokenValidation(
 			Message: "Token expired",
 		}
 	}
+	// FIXME : 这里不应该更新！应该使用 SecretKey 调用单独接口来更新
 	// 更新 Token 校验时间
 	queryUserToken.ValidTime = timestampCurrent
 	queryResult = database.Save(&queryUserToken)

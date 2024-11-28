@@ -46,10 +46,12 @@ const columnUserTokenToken = "token"
 const columnUserTokenPlatform = "platform"
 const columnUserTokenMachineCode = "machine_code"
 const columnUserTokenMachineName = "machine_name"
-const columnUserTokenSecretKey = "secret_key"
+const columnUserTokenRefreshToken = "refresh_token"
 const columnUserTokenCreateTime = "create_time"
-const columnUserTokenValidTime = "valid_time"
-const columnUserTokenDuration = "duration"
+const columnUserTokenTokenExpireTime = "token_expire_time"
+const columnUserTokenRefreshTokenExpireTime = "refresh_token_expire_time"
+const columnUserTokenLastAccessTime = "last_access_time"
+const columnUserTokenLastRefreshTime = "last_refresh_time"
 
 const valueUserTokenPlatformUnknown = 0
 const valueUserTokenPlatformBrowser = 1
@@ -60,16 +62,18 @@ const valueUserTokenPlatformMacOS = 5
 const valueUserTokenPlatformLinux = 6
 
 type UserToken struct {
-	ID          int64  `gorm:"column:id;"`
-	UserID      int64  `gorm:"column:user_id;"`
-	Token       string `gorm:"column:token;"`
-	Platform    int    `gorm:"column:platform;"`
-	MachineCode string `gorm:"column:machine_code;"`
-	MachineName string `gorm:"column:machine_name;"`
-	SecretKey   string `gorm:"column:secret_key;"`
-	CreateTime  int64  `gorm:"column:create_time;"`
-	ValidTime   int64  `gorm:"column:valid_time;"`
-	Duration    int64  `gorm:"column:duration;"`
+	ID                     int64  `gorm:"column:id;"`
+	UserID                 int64  `gorm:"column:user_id;"`
+	Token                  string `gorm:"column:token;"`
+	Platform               int    `gorm:"column:platform;"`
+	MachineCode            string `gorm:"column:machine_code;"`
+	MachineName            string `gorm:"column:machine_name;"`
+	RefreshToken           string `gorm:"column:refresh_token;"`
+	TokenExpireTime        int64  `gorm:"column:token_expire_time;"`
+	RefreshTokenExpireTime int64  `gorm:"column:refresh_token_expire_time;"`
+	CreateTime             int64  `gorm:"column:create_time;"`
+	LastAccessTime         int64  `gorm:"column:last_access_time;"`
+	LastRefreshTime        int64  `gorm:"column:last_refresh_time;"`
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 用户注册邀请码

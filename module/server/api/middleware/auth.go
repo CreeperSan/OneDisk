@@ -14,9 +14,9 @@ func AuthToken() gin.HandlerFunc {
 		contextHeader, _ := context.Get(KeyHeader)
 		requestHeader, isInstance := contextHeader.(apimodel.Header)
 		if !isInstance {
-			context.JSON(httpcode.ParamsError, gin.H{
-				"code": httpcode.ParamsError,
-				"msg":  "操作失败，请重试",
+			context.JSON(httpcode.InternalError, gin.H{
+				"code": httpcode.InternalError,
+				"msg":  "服务器内部错误，请重试",
 			})
 			context.Abort()
 			return

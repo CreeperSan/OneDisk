@@ -67,7 +67,7 @@ func UserTokenValidation(
 	}
 	queryUserToken := queryUserTokens[0]
 	timestampCurrent := timeutils.Timestamp()
-	if timestampCurrent > queryUserToken.ValidTime+queryUserToken.Duration {
+	if timestampCurrent > queryUserToken.TokenExpireTime {
 		// 删除 Token
 		queryResult = database.Delete(&queryUserToken)
 		if queryResult.Error != nil {
@@ -78,13 +78,24 @@ func UserTokenValidation(
 			Message: "Token expired",
 		}
 	}
-	// FIXME : 这里不应该更新！应该使用 SecretKey 调用单独接口来更新
 	// 更新 Token 校验时间
-	queryUserToken.ValidTime = timestampCurrent
+	queryUserToken.LastAccessTime = timestampCurrent
 	queryResult = database.Save(&queryUserToken)
 	if queryResult.Error != nil {
-		log.Warming(tag, formatstring.String("Failed to update token valid time.token=%s userID=%d", queryUserToken.Token, userID), zap.Error(queryResult.Error))
+		log.Warming(tag, formatstring.String("Failed to update token access time.token=%s userID=%d", queryUserToken.Token, userID), zap.Error(queryResult.Error))
 	}
 
 	return &queryUser, &queryUserToken, OperationResult{Code: errcode.OK}
+}
+
+// UserTokenRefresh
+// 刷新用户身份令牌
+func UserTokenRefresh(
+	userID int64,
+	refreshToken string,
+	platform int,
+	machineCode string,
+	machineName string,
+) {
+
 }

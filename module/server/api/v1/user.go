@@ -4,7 +4,7 @@ import (
 	errcode "OneDisk/definition/err_code"
 	httpcode "OneDisk/definition/http_code"
 	"OneDisk/module/database"
-	apiconstheader "OneDisk/module/server/api/const/header"
+	apimodel "OneDisk/module/server/api/const/model"
 	apimiddleware "OneDisk/module/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -38,9 +38,15 @@ func Register(server *gin.Engine) {
 	/* 登录 */
 	server.POST("/api/user/v1/login", func(context *gin.Context) {
 		// 检查 Header
-		headerMachineCode := context.GetHeader(apiconstheader.MachineCode)
-		headerMachineName := context.GetHeader(apiconstheader.MachineName)
-		headerPlatform := context.GetHeader(apiconstheader.Platform)
+		contextHeader, _ := context.Get(apimiddleware.KeyHeader)
+		_, isInstance := contextHeader.(apimodel.Header)
+		if !isInstance {
+			context.JSON(httpcode.InternalError, gin.H{
+				"code": httpcode.InternalError,
+				"msg":  "服务器内部错误，请稍后重试",
+			})
+			return
+		}
 		// 检查请求参数
 		type RequestLogin struct {
 			Username string `json:"username"`

@@ -73,14 +73,16 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUserToken + " (" +
 			columnUserTokenID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 			columnUserTokenUserID + " INTEGER NOT NULL," +
-			columnUserTokenToken + " VARCHAR(128) NOT NULL," +
 			columnUserTokenPlatform + " INTEGER NOT NULL," +
 			columnUserTokenMachineCode + " VARCHAR(32) NOT NULL," +
 			columnUserTokenMachineName + " VARCHAR(32) NOT NULL," +
-			columnUserTokenSecretKey + " VARCHAR(32) NOT NULL," +
+			columnUserTokenToken + " VARCHAR(32) NOT NULL," +
+			columnUserTokenRefreshToken + " VARCHAR(32) NOT NULL," +
+			columnUserTokenTokenExpireTime + " INTEGER NOT NULL," +
+			columnUserTokenRefreshTokenExpireTime + " INTEGER NOT NULL," +
 			columnUserTokenCreateTime + " INTEGER NOT NULL," +
-			columnUserTokenValidTime + " INTEGER NOT NULL," +
-			columnUserTokenDuration + " INTEGER NOT NULL," +
+			columnUserTokenLastAccessTime + " INTEGER NOT NULL," +
+			columnUserTokenLastRefreshTime + " INTEGER NOT NULL," +
 			"FOREIGN KEY (" + columnUserTokenUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
 		// 创建用户邀请码表

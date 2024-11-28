@@ -1,6 +1,7 @@
 package apimiddleware
 
 import (
+	errcode "OneDisk/definition/err_code"
 	httpcode "OneDisk/definition/http_code"
 	"OneDisk/module/database"
 	"github.com/gin-gonic/gin"
@@ -44,17 +45,18 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		validationUser, validationToken, validationError := database.UserTokenValidation(headerUserIDInt, headerToken, headerMachineCode, headerMachineName, headerPlatformInt)
-		if validationError != nil {
-			context.JSON(httpcode.ParamsError, gin.H{
-				"code": validationError.Code,
-				"msg":  validationError.Message,
+		validationUser, validationToken, validationResult := database.UserTokenValidation(headerUserIDInt, headerToken, headerMachineCode, headerMachineName, headerPlatformInt)
+
+		if validationResult.Error != nil {
+			context.JSON(httpcode.InternalError, gin.H{
+				"code": validationResult.Code,
+				"msg":  "服务器内部出错，请稍后重试",
 			})
 			context.Abort()
 			return
 		}
 
-		if validationUser == nil || validationToken == nil {
+		if validationUser == nil || validationToken == nil || validationResult.Code != errcode.OK {
 			context.JSON(httpcode.Unauthorized, gin.H{
 				"code": httpcode.Unauthorized,
 				"msg":  "登录信息过期，请重新登录",

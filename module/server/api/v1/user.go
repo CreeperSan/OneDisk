@@ -34,7 +34,17 @@ func Register(server *gin.Engine) {
 
 	/* 登录 */
 	server.POST("/api/user/v1/login", func(context *gin.Context) {
-
+		type RequestLogin struct {
+			Username string `json:"username"`
+			Password string `json:"password"`
+		}
+		var request RequestLogin
+		if err := context.BindJSON(&request); err != nil {
+			context.JSON(httpcode.ParamsError, gin.H{
+				"code": httpcode.ParamsError,
+				"msg":  "操作失败，请重试",
+			})
+		}
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 用户注册

@@ -2,7 +2,6 @@ package database
 
 import (
 	errcode "OneDisk/definition/err_code"
-	"OneDisk/exception"
 	"OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	timeutils "OneDisk/lib/utils/time"
@@ -17,28 +16,28 @@ func UserTokenValidation(
 	machineCode string,
 	machineName string,
 	platform int,
-) (*User, *UserToken, *exception.InterruptException) {
+) (*User, *UserToken, OperationResult) {
 	// 查询用户是否被封禁或者注销
 	var queryUsers []User
 	queryResult := database.Where(&User{
 		ID: userID,
 	}).Find(&queryUsers)
 	if queryResult.Error != nil {
-		return nil, nil, &exception.InterruptException{
-			Code:          errcode.DatabaseExecuteError,
-			Message:       "Error occurred while querying user",
-			OriginalError: queryResult.Error,
+		return nil, nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Error occurred while querying user",
+			Error:   queryResult.Error,
 		}
 	}
 	if len(queryUsers) <= 0 {
-		return nil, nil, &exception.InterruptException{
+		return nil, nil, OperationResult{
 			Code:    errcode.UserNotExist,
 			Message: "User not exist",
 		}
 	}
 	queryUser := queryUsers[0]
 	if queryUser.Status == valueUserStatusForbidden {
-		return nil, nil, &exception.InterruptException{
+		return nil, nil, OperationResult{
 			Code:    errcode.UserForbidden,
 			Message: "User is forbidden",
 		}
@@ -54,14 +53,14 @@ func UserTokenValidation(
 		Platform:    platform,
 	}).Find(&queryUserTokens)
 	if queryResult.Error != nil {
-		return nil, nil, &exception.InterruptException{
-			Code:          errcode.DatabaseExecuteError,
-			Message:       "Error occurred while querying user token",
-			OriginalError: queryResult.Error,
+		return nil, nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Error occurred while querying user token",
+			Error:   queryResult.Error,
 		}
 	}
 	if len(queryUserTokens) <= 0 {
-		return nil, nil, &exception.InterruptException{
+		return nil, nil, OperationResult{
 			Code:    errcode.AuthTokenInvalid,
 			Message: "No token was found",
 		}
@@ -74,7 +73,7 @@ func UserTokenValidation(
 		if queryResult.Error != nil {
 			log.Warming(tag, formatstring.String("Fail to remove expired token: token=%s id=%d userID=%d", queryUserToken.Token, queryUserToken.ID, queryUserToken.UserID), zap.Error(queryResult.Error))
 		}
-		return nil, nil, &exception.InterruptException{
+		return nil, nil, OperationResult{
 			Code:    errcode.AuthTokenExpired,
 			Message: "Token expired",
 		}
@@ -86,5 +85,5 @@ func UserTokenValidation(
 		log.Warming(tag, formatstring.String("Failed to update token valid time.token=%s userID=%d", queryUserToken.Token, userID), zap.Error(queryResult.Error))
 	}
 
-	return &queryUser, &queryUserToken, nil
+	return &queryUser, &queryUserToken, OperationResult{Code: errcode.OK}
 }

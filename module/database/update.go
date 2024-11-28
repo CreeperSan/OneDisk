@@ -59,17 +59,38 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 		/* 数据库初版初始化 */
 		// 创建用户表
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUser + " (" +
-			columnUserID + "  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+			columnUserID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 			columnUserUsername + " VARCHAR(64) NOT NULL UNIQUE," +
 			columnUserPassword + " VARCHAR(128) NOT NULL," +
-			columnUserEmail + " VARCHAR(128) UNIQUE," +
+			columnUserEmail + " VARCHAR(128) NOT NULL," +
 			columnUserNickname + " VARCHAR(128) NOT NULL," +
-			columnUserAvatar + " VARCHAR(256)," +
-			columnUserPhone + " VARCHAR(32) UNIQUE," +
+			columnUserAvatar + " VARCHAR(256) NOT NULL DEFAULT ''," +
+			columnUserPhone + " VARCHAR(32) NOT NULL," +
 			columnUserCreateTime + " INTEGER NOT NULL," +
 			columnUserType + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserTypeGuest) + "," +
 			columnUserStatus + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserStatusActive) +
 			")")
+		// 创建用户数据库邮箱和手机的唯一性约束
+		db.Exec("CREATE TRIGGER IF NOT EXISTS trigger_user_email_unique_insert BEFORE INSERT ON " + tableUser +
+			" FOR EACH ROW BEGIN " +
+			" SELECT RAISE(ABORT, 'Email must be unique or empty') " +
+			" WHERE NEW." + columnUserEmail + " != '' AND EXISTS (SELECT 1 FROM " + tableUser + " WHERE " + columnUserEmail + " = NEW." + columnUserEmail + "); " +
+			"END;")
+		db.Exec("CREATE TRIGGER IF NOT EXISTS trigger_user_email_unique_update BEFORE UPDATE ON " + tableUser +
+			" FOR EACH ROW BEGIN " +
+			" SELECT RAISE(ABORT, 'Email must be unique or empty') " +
+			" WHERE NEW." + columnUserEmail + " != '' AND EXISTS (SELECT 1 FROM " + tableUser + " WHERE " + columnUserEmail + " = NEW." + columnUserEmail + "); " +
+			"END;")
+		db.Exec("CREATE TRIGGER IF NOT EXISTS trigger_user_phone_unique_insert BEFORE INSERT ON " + tableUser +
+			" FOR EACH ROW BEGIN " +
+			" SELECT RAISE(ABORT, 'Phone must be unique or empty') " +
+			" WHERE NEW." + columnUserPhone + " != '' AND EXISTS (SELECT 1 FROM " + tableUser + " WHERE " + columnUserPhone + " = NEW." + columnUserPhone + "); " +
+			"END;")
+		db.Exec("CREATE TRIGGER IF NOT EXISTS trigger_user_phone_unique_update BEFORE UPDATE ON " + tableUser +
+			" FOR EACH ROW BEGIN " +
+			" SELECT RAISE(ABORT, 'Phone must be unique or empty') " +
+			" WHERE NEW." + columnUserPhone + " != '' AND EXISTS (SELECT 1 FROM " + tableUser + " WHERE " + columnUserPhone + " = NEW." + columnUserPhone + "); " +
+			"END;")
 		// 创建用户令牌表
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUserToken + " (" +
 			columnUserTokenID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +

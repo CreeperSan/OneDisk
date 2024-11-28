@@ -84,11 +84,12 @@ func Initialize() error {
 			Password:   formatstring.Password(inputAdminPassword),
 			Type:       valueUserTypeAdmin,
 			CreateTime: timeutils.Timestamp(),
+			Status:     valueUserStatusActive,
 		}
 		resultInsert := db.Create(&tmpAdminUser)
 		if resultInsert.Error != nil {
 			log.Error(tag, "Failed to create administrator account", zap.Error(resultInsert.Error))
-			return err
+			return resultInsert.Error
 		}
 		log.Info(tag, "Administrator account created successfully!", zap.String("username", inputAdminUsername))
 	} else if queryAdminUser != nil && len(queryAdminUser) > 1 {

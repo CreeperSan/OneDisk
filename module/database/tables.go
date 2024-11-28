@@ -12,6 +12,7 @@ const columnUserEmail = "email"
 const columnUserPhone = "phone"
 const columnUserCreateTime = "create_time"
 const columnUserType = "type"
+const columnUserStatus = "Status"
 
 const valueUserTypeGuest = 0
 const valueUserTypeNormal = 1

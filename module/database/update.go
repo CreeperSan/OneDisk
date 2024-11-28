@@ -67,7 +67,8 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			columnUserAvatar + " VARCHAR(256)," +
 			columnUserPhone + " VARCHAR(32) UNIQUE," +
 			columnUserCreateTime + " INTEGER NOT NULL," +
-			columnUserType + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserTypeGuest) +
+			columnUserType + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserTypeGuest) + "," +
+			columnUserStatus + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserStatusActive) +
 			")")
 		// 创建用户令牌表
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUserToken + " (" +

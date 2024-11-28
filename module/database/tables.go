@@ -17,6 +17,9 @@ const valueUserTypeGuest = 0
 const valueUserTypeNormal = 1
 const valueUserTypeAdmin = 2
 
+const valueUserStatusActive = 0
+const valueUserStatusForbidden = 1
+
 type User struct {
 	ID         int64  `gorm:"column:id;"`
 	Username   string `gorm:"column:username;"`
@@ -26,7 +29,8 @@ type User struct {
 	Email      string `gorm:"column:email;"`
 	Phone      string `gorm:"column:phone;"`
 	CreateTime int64  `gorm:"column:create_time;"`
-	Type       int    `gorm:"column:type;"` // 用户类型（0：游客，1：普通用户，2：管理员）
+	Type       int    `gorm:"column:type;"`   // 用户类型（0：游客，1：普通用户，2：管理员）
+	Status     int    `gorm:"column:status;"` // 用户状态（0：活跃，1：封禁）
 }
 
 func (User) TableName() string {
@@ -44,7 +48,8 @@ const columnUserTokenMachineCode = "machine_code"
 const columnUserTokenMachineName = "machine_name"
 const columnUserTokenSecretKey = "secret_key"
 const columnUserTokenCreateTime = "create_time"
-const columnUserTokenExpireTime = "expire_time"
+const columnUserTokenValidTime = "valid_time"
+const columnUserTokenDuration = "duration"
 
 const valueUserTokenPlatformUnknown = 0
 const valueUserTokenPlatformBrowser = 1
@@ -63,5 +68,25 @@ type UserToken struct {
 	MachineName string `gorm:"column:machine_name;"`
 	SecretKey   string `gorm:"column:secret_key;"`
 	CreateTime  int64  `gorm:"column:create_time;"`
-	ExpireTime  int64  `gorm:"column:expire_time;"`
+	ValidTime   int64  `gorm:"column:valid_time;"`
+	Duration    int64  `gorm:"column:duration;"`
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 用户注册邀请码
+
+const tableUserInviteCode = "user_invite_code"
+const columnUserInviteCodeID = "id"
+const columnUserInviteCodeFromUserID = "from_user_id"
+const columnUserInviteCodeExpiredTime = "expired_time"
+const columnUserInviteCodeUsage = "usage"
+const columnUserInviteCodeCode = "code"
+
+const valueUserInviteCodeUsageRegister = "register"
+
+type UserInviteCode struct {
+	ID          int64  `gorm:"column:id;"`
+	FromUserID  int64  `gorm:"column:from_user_id;"`
+	ExpiredTime int64  `gorm:"column:expired_time;"`
+	Usage       string `gorm:"column:usage;"`
+	code        string `gorm:"column:code;"`
 }

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"OneDisk/lib/definition"
+	definition2 "OneDisk/definition"
 	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	"errors"
@@ -15,9 +15,9 @@ func GetDatabase() Database {
 
 func SetDatabase(database Database) error {
 	// 更新到缓存中
-	if database.Type == definition.DatabaseSqlite { // 目前仅支持 sqlite
+	if database.Type == definition2.DatabaseSqlite { // 目前仅支持 sqlite
 		if len(database.Path) <= 0 {
-			database.Path = definition.PathDatabase
+			database.Path = definition2.PathDatabase
 		}
 		cache.Database = database
 	} else {
@@ -32,7 +32,7 @@ func SetDatabase(database Database) error {
 	}
 
 	// 写入文件
-	err = os.WriteFile(definition.PathConfig, data, 0644)
+	err = os.WriteFile(definition2.PathConfig, data, 0644)
 	if err != nil {
 		log.Error(tag, string2.String("Failed to write config.yaml when set database, database=", database))
 		return err

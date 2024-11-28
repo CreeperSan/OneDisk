@@ -1,7 +1,7 @@
 package config
 
 import (
-	"OneDisk/lib/definition"
+	"OneDisk/definition"
 	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	"gopkg.in/yaml.v2"

@@ -1,7 +1,7 @@
 package log
 
 import (
-	"OneDisk/lib/definition"
+	definition2 "OneDisk/definition"
 	string2 "OneDisk/lib/format/formatstring"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
@@ -16,7 +16,7 @@ var printer *zap.Logger
 func Initialize() {
 	// 配置日志分片
 	logger := &lumberjack.Logger{
-		Filename: definition.PathLog,
+		Filename: definition2.PathLog,
 		MaxSize:  10,   // megabytes
 		MaxAge:   30,   // days
 		Compress: true, // enabled by default
@@ -99,6 +99,6 @@ func AppStart() {
 	Info(tag, " | |_| || | | ||  __/| |_| || |\\__ \\|   <")
 	Info(tag, "  \\___/ |_| |_| \\___||____/ |_||___/|_|\\_\\")
 	Info(tag, "============================================")
-	Info(tag, string2.String("Welcome to OneDisk %s (%d)", definition.VersionName, definition.VersionCode))
+	Info(tag, string2.String("Welcome to OneDisk %s (%d)", definition2.VersionName, definition2.VersionCode))
 	Info(tag, "Application is starting...")
 }

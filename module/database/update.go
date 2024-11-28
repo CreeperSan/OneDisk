@@ -1,7 +1,7 @@
 package database
 
 import (
-	"OneDisk/lib/definition"
+	"OneDisk/definition"
 	"OneDisk/lib/format/formatstring"
 	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
@@ -59,7 +59,7 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 		/* 数据库初版初始化 */
 		// 创建用户表
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUser + " (" +
-			columnUserID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+			columnUserID + "  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 			columnUserUsername + " VARCHAR(64) NOT NULL UNIQUE," +
 			columnUserPassword + " VARCHAR(128) NOT NULL," +
 			columnUserEmail + " VARCHAR(128) UNIQUE," +
@@ -71,7 +71,7 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			")")
 		// 创建用户令牌表
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUserToken + " (" +
-			columnUserTokenID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+			columnUserTokenID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 			columnUserTokenUserID + " INTEGER NOT NULL," +
 			columnUserTokenToken + " VARCHAR(128) NOT NULL," +
 			columnUserTokenPlatform + " INTEGER NOT NULL," +
@@ -79,8 +79,18 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			columnUserTokenMachineName + " VARCHAR(32) NOT NULL," +
 			columnUserTokenSecretKey + " VARCHAR(32) NOT NULL," +
 			columnUserTokenCreateTime + " INTEGER NOT NULL," +
-			columnUserTokenExpireTime + " INTEGER NOT NULL," +
-			"FOREIGN KEY (" + columnUserTokenUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ")" +
+			columnUserTokenValidTime + " INTEGER NOT NULL," +
+			columnUserTokenDuration + " INTEGER NOT NULL," +
+			"FOREIGN KEY (" + columnUserTokenUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
+			")")
+		// 创建用户邀请码表
+		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUserInviteCode + " (" +
+			columnUserInviteCodeID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+			columnUserInviteCodeFromUserID + " INTEGER NOT NULL," +
+			columnUserInviteCodeExpiredTime + " INTEGER NOT NULL," +
+			columnUserInviteCodeUsage + " VARCHAR(64) NOT NULL," +
+			columnUserInviteCodeCode + " VARCHAR(128) NOT NULL UNIQUE," +
+			"FOREIGN KEY (" + columnUserInviteCodeFromUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
 		return definition.VersionDatabaseInitialize, nil
 	}

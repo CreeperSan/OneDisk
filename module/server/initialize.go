@@ -5,7 +5,11 @@ import (
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
+	apiv1user "OneDisk/module/server/api/v1"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+	"net/http"
 )
 
 const tag = "Server"
@@ -50,6 +54,27 @@ func Initialize() error {
 			log.Error(tag, "Failed to set server port")
 			return err
 		}
+	}
+
+	return nil
+}
+
+func StartServer() error {
+	r := gin.Default()
+
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
+
+	// V1 版本的用户接口
+	apiv1user.Register(r)
+
+	err := r.Run()
+	if err != nil {
+		log.Error(tag, "Failed to start server", zap.Error(err))
+		return err
 	}
 
 	return nil

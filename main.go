@@ -1,15 +1,12 @@
 package main
 
 import (
-	"OneDisk/lib/definition"
+	"OneDisk/definition"
 	"OneDisk/lib/lifecycle"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
 	"OneDisk/module/database"
 	"OneDisk/module/server"
-	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -39,11 +36,9 @@ func main() {
 	}
 
 	// 启动服务器
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run()
+	err = server.StartServer()
+	if err != nil {
+		lifecycle.Exit(definition.ExitCodeServerStart)
+		return
+	}
 }

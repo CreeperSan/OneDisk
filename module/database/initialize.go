@@ -1,7 +1,7 @@
 package database
 
 import (
-	"OneDisk/lib/definition"
+	definition2 "OneDisk/definition"
 	"OneDisk/lib/format/formatstring"
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
@@ -29,9 +29,9 @@ func Initialize() error {
 		// 未配置数据库，进行配置
 		log.Info(tag, "Database not found, creating ...")
 		// 配置类型（目前仅支持sqlite）
-		configDatabase.Type = definition.DatabaseSqlite
+		configDatabase.Type = definition2.DatabaseSqlite
 		// 配置路径（目前暂不支持自定义）
-		configDatabase.Path = definition.PathDatabase
+		configDatabase.Path = definition2.PathDatabase
 		// 配置密码
 		fmt.Println("Please enter your database password:")
 		inputPassword := input.ReadString()

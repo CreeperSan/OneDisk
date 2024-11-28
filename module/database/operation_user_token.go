@@ -89,6 +89,89 @@ func UserTokenValidation(
 	return &queryUser, &queryUserToken, OperationResult{Code: errcode.OK}
 }
 
+// UserTokenRemove
+// 删除用户身份令牌
+func UserTokenRemove(
+	platform int,
+	machineCode string,
+	machineName string,
+) OperationResult {
+	var queryUserTokens []UserToken
+	queryResult := database.Where(&UserToken{
+		Platform:    platform,
+		MachineCode: machineCode,
+		MachineName: machineName,
+	}).Find(&queryUserTokens)
+	if queryResult.Error != nil {
+		return OperationResult{
+			Code:  errcode.DatabaseExecuteError,
+			Error: queryResult.Error,
+		}
+	}
+	if len(queryUserTokens) > 0 {
+		queryResult = database.Delete(&queryUserTokens)
+		if queryResult.Error != nil {
+			return OperationResult{
+				Code:  errcode.DatabaseExecuteError,
+				Error: queryResult.Error,
+			}
+		}
+	}
+	return OperationResult{Code: errcode.OK}
+}
+
+// UserTokenCreateAndInsert
+// 创建并插入用户的身份令牌
+func UserTokenCreateAndInsert(
+	userID int64,
+	platform int,
+	machineCode string,
+	machineName string,
+) (*User, *UserToken, OperationResult) {
+	// 1、查询用户是否存在或者被封禁
+	queryUsers := []User{}
+	queryResult := database.Where(&User{
+		ID: userID,
+	})
+	if queryResult.Error != nil {
+		return nil, nil, OperationResult{
+			Code:  errcode.DatabaseExecuteError,
+			Error: queryResult.Error,
+		}
+	}
+	if len(queryUsers) <= 0 {
+		return nil, nil, OperationResult{
+			Code:    errcode.ParamsError,
+			Message: "User not exists",
+		}
+	}
+	queryUser := queryUsers[0]
+	// 2、插入新的 Token
+	currentTimestamp := timeutils.Timestamp()
+	insertUserToken := UserToken{
+		UserID:                 queryUser.ID,
+		Token:                  formatstring.GenerateToken(),
+		Platform:               platform,
+		MachineCode:            machineCode,
+		MachineName:            machineName,
+		RefreshToken:           formatstring.GenerateRefreshToken(),
+		TokenExpireTime:        currentTimestamp + apiconstuser.TimeTokenDuration,
+		RefreshTokenExpireTime: currentTimestamp + apiconstuser.TimeRefreshTokenDuration,
+		CreateTime:             currentTimestamp,
+		LastAccessTime:         currentTimestamp,
+		LastRefreshTime:        currentTimestamp,
+	}
+	result := database.Create(&insertUserToken)
+	if result.Error != nil {
+		return nil, nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Failed to create token",
+			Error:   result.Error,
+		}
+	}
+	return &queryUser, &insertUserToken, OperationResult{Code: errcode.OK}
+}
+
 // UserTokenRefresh
 // 刷新用户身份令牌
 func UserTokenRefresh(

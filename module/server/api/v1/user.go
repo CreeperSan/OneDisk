@@ -3,8 +3,11 @@ package apiv1user
 import (
 	errcode "OneDisk/definition/err_code"
 	httpcode "OneDisk/definition/http_code"
+	"OneDisk/lib/format/formatstring"
+	timeutils "OneDisk/lib/utils/time"
 	"OneDisk/module/database"
 	apimodel "OneDisk/module/server/api/const/model"
+	apiconstuser "OneDisk/module/server/api/const/user"
 	apimiddleware "OneDisk/module/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -85,7 +88,7 @@ func Register(server *gin.Engine) {
 	server.POST("/api/user/v1/login", func(context *gin.Context) {
 		// 检查 Header
 		contextHeader, _ := context.Get(apimiddleware.KeyHeader)
-		_, isInstance := contextHeader.(apimodel.Header)
+		requestHeader, isInstance := contextHeader.(apimodel.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{
 				"code": httpcode.InternalError,
@@ -122,8 +125,50 @@ func Register(server *gin.Engine) {
 			})
 			return
 		}
-		// 登录成功，生成 Token
-
+		// 防止重复登录，先删除旧的 token 记录
+		result = database.UserTokenRemove(
+			requestHeader.Platform,
+			requestHeader.MachineCode,
+			requestHeader.MachineName,
+		)
+		if result.Code != errcode.OK {
+			context.JSON(httpcode.InternalError, gin.H{
+				"code": result.Code,
+				"msg":  "服务器内部错误，请重试",
+			})
+			return
+		}
+		// 登录成功，生成并保存 Token
+		resultUser, resultUserToken, result := database.UserTokenCreateAndInsert(
+			resultUser.ID,
+			requestHeader.Platform,
+			requestHeader.MachineCode,
+			requestHeader.MachineName,
+		)
+		if result.Code != errcode.OK {
+			context.JSON(httpcode.InternalError, gin.H{
+				"code": result.Code,
+				"msg":  "服务器内部错误，请重试",
+			})
+			return
+		}
+		// 返回数据
+		context.JSON(httpcode.OK, gin.H{
+			"code": httpcode.OK,
+			"msg":  "登录成功",
+			"data": gin.H{
+				"userID":       resultUser.ID,
+				"username":     resultUser.Username,
+				"nickname":     resultUser.Nickname,
+				"avatar":       resultUser.Avatar,
+				"email":        resultUser.Email,
+				"phone":        resultUser.Phone,
+				"type":         resultUser.Type,
+				"status":       resultUser.Status,
+				"token":        resultUserToken.Token,
+				"refreshToken": resultUserToken.RefreshToken,
+			},
+		})
 	})
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 用户注册

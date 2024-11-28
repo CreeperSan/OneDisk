@@ -1,6 +1,7 @@
 package formatstring
 
 import (
+	"OneDisk/lib/random"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,4 +16,12 @@ func Password(password string) string {
 		return ""
 	}
 	return string(hashedPassword)
+}
+
+func GenerateRefreshToken() string {
+	return random.String(32)
+}
+
+func GenerateToken() string {
+	return random.String(32)
 }

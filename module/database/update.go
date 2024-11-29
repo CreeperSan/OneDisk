@@ -108,14 +108,14 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			"FOREIGN KEY (" + columnUserTokenUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
 		// 创建用户邀请码表
-		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUserInviteCode + " (" +
-			columnUserInviteCodeID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-			columnUserInviteCodeFromUserID + " INTEGER NOT NULL," +
-			columnUserInviteCodeExpiredTime + " INTEGER NOT NULL," +
-			columnUserInviteCodeUsage + " VARCHAR(64) NOT NULL," +
-			columnUserInviteCodeCode + " VARCHAR(128) NOT NULL UNIQUE," +
-			columnUserInviteCodeExtra + " TEXT NOT NULL DEFAULT ''," +
-			"FOREIGN KEY (" + columnUserInviteCodeFromUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
+		db.Exec("CREATE TABLE IF NOT EXISTS " + tableInviteCode + " (" +
+			columnInviteCodeID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+			columnInviteCodeFromUserID + " INTEGER NOT NULL," +
+			columnInviteCodeExpiredTime + " INTEGER NOT NULL," +
+			columnInviteCodeUsage + " VARCHAR(64) NOT NULL," +
+			columnInviteCodeCode + " VARCHAR(128) NOT NULL UNIQUE," +
+			columnInviteCodeExtra + " TEXT NOT NULL DEFAULT ''," +
+			"FOREIGN KEY (" + columnInviteCodeFromUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
 		return definition.VersionDatabaseInitialize, nil
 	}

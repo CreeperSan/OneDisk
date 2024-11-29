@@ -1,4 +1,4 @@
-package apiv1user
+package apiuserv1
 
 import (
 	errcode "OneDisk/definition/err_code"
@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func registerUserAuth(server *gin.Engine) {
+func RegisterUserAuth(server *gin.Engine) {
 	/* 认证 - 刷新 Token */
 	server.POST(
 		"/api/user/v1/auth/refresh",

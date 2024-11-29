@@ -79,17 +79,17 @@ type UserToken struct {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 用户注册邀请码
 
-const tableUserInviteCode = "user_invite_code"
-const columnUserInviteCodeID = "id"
-const columnUserInviteCodeFromUserID = "from_user_id"
-const columnUserInviteCodeExpiredTime = "expired_time"
-const columnUserInviteCodeUsage = "usage"
-const columnUserInviteCodeCode = "code"
-const columnUserInviteCodeExtra = "extra"
+const tableInviteCode = "invite_code"
+const columnInviteCodeID = "id"
+const columnInviteCodeFromUserID = "from_user_id"
+const columnInviteCodeExpiredTime = "expired_time"
+const columnInviteCodeUsage = "usage"
+const columnInviteCodeCode = "code"
+const columnInviteCodeExtra = "extra"
 
-const valueUserInviteCodeUsageRegister = "register" // 用途 - 注册
+const valueInviteCodeUsageRegister = "register" // 用途 - 注册
 
-type UserInviteCode struct {
+type InviteCode struct {
 	ID          int64  `gorm:"column:id;"`
 	FromUserID  int64  `gorm:"column:from_user_id;"`
 	ExpiredTime int64  `gorm:"column:expired_time;"`

@@ -1,11 +1,11 @@
-package apiv1user
+package apiv1invitecode
 
 import (
 	apimiddleware "OneDisk/module/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
 
-func registerUserInviteCode(server *gin.Engine) {
+func RegisterUserInviteCode(server *gin.Engine) {
 	requestGroup := server.Group("/api/user/v1/invite_code")
 
 	// 邀请码都需要已登录用户

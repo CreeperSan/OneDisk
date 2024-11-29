@@ -5,8 +5,9 @@ import (
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
+	apiinvitecode "OneDisk/module/server/api/invitecode"
 	apimiddleware "OneDisk/module/server/api/middleware"
-	apiv1user "OneDisk/module/server/api/v1"
+	apiuser "OneDisk/module/server/api/user"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -61,21 +62,22 @@ func Initialize() error {
 }
 
 func StartServer() error {
-	r := gin.Default()
+	server := gin.Default()
 
-	r.GET("/ping", func(c *gin.Context) {
+	server.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
 
 	// 公共中间件
-	r.Use(apimiddleware.HeaderConvert())
+	server.Use(apimiddleware.HeaderConvert())
 
-	// V1 版本的用户接口
-	apiv1user.Register(r)
+	// 模块接口注册
+	apiuser.Register(server)
+	apiinvitecode.Register(server)
 
-	err := r.Run()
+	err := server.Run()
 	if err != nil {
 		log.Error(tag, "Failed to start server", zap.Error(err))
 		return err

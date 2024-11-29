@@ -1,4 +1,4 @@
-package apiv1user
+package apiuserv1
 
 import (
 	errcode "OneDisk/definition/err_code"
@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func registerUserLogin(server *gin.Engine) {
+func RegisterUserLogin(server *gin.Engine) {
 	/* 登录 */
 	server.POST("/api/user/v1/login", func(context *gin.Context) {
 		// 检查 Header

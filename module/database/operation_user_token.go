@@ -37,7 +37,7 @@ func UserTokenValidation(
 		}
 	}
 	queryUser := queryUsers[0]
-	if queryUser.Status == valueUserStatusForbidden {
+	if queryUser.Status == ValueUserStatusForbidden {
 		return nil, nil, OperationResult{
 			Code:    errcode.UserForbidden,
 			Message: "User is forbidden",
@@ -199,7 +199,7 @@ func UserTokenRefresh(
 		}
 	}
 	queryUser := queryUsers[0]
-	if queryUser.Status == valueUserStatusForbidden {
+	if queryUser.Status == ValueUserStatusForbidden {
 		return nil, nil, OperationResult{
 			Code:    errcode.UserForbidden,
 			Message: "User is forbidden",

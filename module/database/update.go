@@ -67,8 +67,8 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			columnUserAvatar + " VARCHAR(256) NOT NULL DEFAULT ''," +
 			columnUserPhone + " VARCHAR(32) NOT NULL," +
 			columnUserCreateTime + " INTEGER NOT NULL," +
-			columnUserType + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserTypeGuest) + "," +
-			columnUserStatus + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(valueUserStatusActive) +
+			columnUserType + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(ValueUserTypeGuest) + "," +
+			columnUserStatus + " INTEGER NOT NULL DEFAULT " + strconv.Itoa(ValueUserStatusActive) +
 			")")
 		// 创建用户数据库邮箱和手机的唯一性约束
 		db.Exec("CREATE TRIGGER IF NOT EXISTS trigger_user_email_unique_insert BEFORE INSERT ON " + tableUser +

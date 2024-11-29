@@ -59,3 +59,27 @@ func AuthToken() gin.HandlerFunc {
 		context.Next()
 	}
 }
+
+// AuthRequireAdminister
+// 标记这个方法需要管理员权限才能调用
+// 调用这个的前提依赖是需要先调用 AuthToken
+func AuthRequireAdminister() gin.HandlerFunc {
+	return func(context *gin.Context) {
+		contextUser, _ := context.Get(KeyUser)
+		requestUser, isInstance := contextUser.(*database.User)
+		if !isInstance {
+			context.JSON(httpcode.InternalError, gin.H{
+				"code": httpcode.InternalError,
+				"msg":  "服务器内部错误，请稍后重试",
+			})
+			return
+		}
+		if requestUser.Type != database.ValueUserTypeAdmin {
+			context.JSON(httpcode.Forbidden, gin.H{
+				"code": httpcode.Forbidden,
+				"msg":  "您没有足够的权限操作",
+			})
+			context.Abort()
+		}
+	}
+}

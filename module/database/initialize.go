@@ -70,7 +70,7 @@ func Initialize() error {
 
 	// 初始化管理员账户
 	var queryAdminUser []User
-	db.Where(formatstring.String("%s = ?", columnUserType), valueUserTypeAdmin).Find(&queryAdminUser)
+	db.Where(formatstring.String("%s = ?", columnUserType), ValueUserTypeAdmin).Find(&queryAdminUser)
 	if queryAdminUser == nil || len(queryAdminUser) <= 0 {
 		log.Info(tag, "No administrator account found, creating...")
 		fmt.Println("You haven't created an administrator account yet.")
@@ -83,8 +83,8 @@ func Initialize() error {
 			Password:   formatstring.Password(inputAdminPassword),
 			Nickname:   inputAdminUsername,
 			CreateTime: timeutils.Timestamp(),
-			Type:       valueUserTypeAdmin,
-			Status:     valueUserStatusActive,
+			Type:       ValueUserTypeAdmin,
+			Status:     ValueUserStatusActive,
 		}
 		resultInsert := db.Create(&tmpAdminUser)
 		if resultInsert.Error != nil {

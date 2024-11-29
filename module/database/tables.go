@@ -14,12 +14,12 @@ const columnUserCreateTime = "create_time"
 const columnUserType = "type"
 const columnUserStatus = "Status"
 
-const valueUserTypeGuest = 0
-const valueUserTypeNormal = 1
-const valueUserTypeAdmin = 2
+const ValueUserTypeGuest = 0
+const ValueUserTypeNormal = 1
+const ValueUserTypeAdmin = 2
 
-const valueUserStatusActive = 0
-const valueUserStatusForbidden = 1
+const ValueUserStatusActive = 0
+const ValueUserStatusForbidden = 1
 
 type User struct {
 	ID         int64  `gorm:"column:id;"`

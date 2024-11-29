@@ -85,8 +85,9 @@ const columnUserInviteCodeFromUserID = "from_user_id"
 const columnUserInviteCodeExpiredTime = "expired_time"
 const columnUserInviteCodeUsage = "usage"
 const columnUserInviteCodeCode = "code"
+const columnUserInviteCodeExtra = "extra"
 
-const valueUserInviteCodeUsageRegister = "register"
+const valueUserInviteCodeUsageRegister = "register" // 用途 - 注册
 
 type UserInviteCode struct {
 	ID          int64  `gorm:"column:id;"`
@@ -94,4 +95,5 @@ type UserInviteCode struct {
 	ExpiredTime int64  `gorm:"column:expired_time;"`
 	Usage       string `gorm:"column:usage;"`
 	code        string `gorm:"column:code;"`
+	extra       string `gorm:"column:extra;"` // 额外信息，json格式
 }

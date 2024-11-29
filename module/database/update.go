@@ -114,6 +114,7 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			columnUserInviteCodeExpiredTime + " INTEGER NOT NULL," +
 			columnUserInviteCodeUsage + " VARCHAR(64) NOT NULL," +
 			columnUserInviteCodeCode + " VARCHAR(128) NOT NULL UNIQUE," +
+			columnUserInviteCodeExtra + " TEXT NOT NULL DEFAULT ''," +
 			"FOREIGN KEY (" + columnUserInviteCodeFromUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
 		return definition.VersionDatabaseInitialize, nil

@@ -19,24 +19,10 @@ func UserTokenValidation(
 	platform int,
 ) (*User, *UserToken, OperationResult) {
 	// 查询用户是否被封禁或者注销
-	var queryUsers []User
-	queryResult := database.Where(&User{
-		ID: userID,
-	}).Find(&queryUsers)
-	if queryResult.Error != nil {
-		return nil, nil, OperationResult{
-			Code:    errcode.DatabaseExecuteError,
-			Message: "Error occurred while querying user",
-			Error:   queryResult.Error,
-		}
+	queryUser, result := UserFindUser(userID)
+	if result.Code != errcode.OK {
+		return nil, nil, result
 	}
-	if len(queryUsers) <= 0 {
-		return nil, nil, OperationResult{
-			Code:    errcode.UserNotExist,
-			Message: "User not exist",
-		}
-	}
-	queryUser := queryUsers[0]
 	if queryUser.Status == ValueUserStatusForbidden {
 		return nil, nil, OperationResult{
 			Code:    errcode.UserForbidden,
@@ -46,7 +32,7 @@ func UserTokenValidation(
 
 	// 查询 Token 是否合法
 	var queryUserTokens []UserToken
-	queryResult = database.Where(&UserToken{
+	queryResult := database.Where(&UserToken{
 		UserID:      userID,
 		Token:       token,
 		MachineCode: machineCode,
@@ -86,7 +72,7 @@ func UserTokenValidation(
 		log.Warming(tag, formatstring.String("Failed to update token access time.token=%s userID=%d", queryUserToken.Token, userID), zap.Error(queryResult.Error))
 	}
 
-	return &queryUser, &queryUserToken, OperationResult{Code: errcode.OK}
+	return queryUser, &queryUserToken, OperationResult{Code: errcode.OK}
 }
 
 // UserTokenRemove

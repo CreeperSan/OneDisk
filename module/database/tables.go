@@ -82,18 +82,26 @@ type UserToken struct {
 const tableInviteCode = "invite_code"
 const columnInviteCodeID = "id"
 const columnInviteCodeFromUserID = "from_user_id"
+const columnInviteCodeCreateTime = "create_time"
 const columnInviteCodeExpiredTime = "expired_time"
 const columnInviteCodeUsage = "usage"
+const columnInviteCodeStatus = "status"
 const columnInviteCodeCode = "code"
 const columnInviteCodeExtra = "extra"
 
-const valueInviteCodeUsageRegister = "register" // 用途 - 注册
+const ValueInviteCodeStatusNotUse = 0
+const ValueInviteCodeStatusUsed = 1
+const ValueInviteCodeStatusInvalid = 2
+
+const ValueInviteCodeUsageRegister = "register" // 用途 - 注册
 
 type InviteCode struct {
 	ID          int64  `gorm:"column:id;"`
 	FromUserID  int64  `gorm:"column:from_user_id;"`
+	CreateTime  int64  `gorm:"column:create_time;"`
 	ExpiredTime int64  `gorm:"column:expired_time;"`
 	Usage       string `gorm:"column:usage;"`
-	code        string `gorm:"column:code;"`
-	extra       string `gorm:"column:extra;"` // 额外信息，json格式
+	Status      int    `gorm:"column:status;"`
+	Code        string `gorm:"column:code;"`
+	Extra       string `gorm:"column:extra;"` // 额外信息，json格式
 }

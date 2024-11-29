@@ -111,8 +111,10 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableInviteCode + " (" +
 			columnInviteCodeID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
 			columnInviteCodeFromUserID + " INTEGER NOT NULL," +
+			columnInviteCodeCreateTime + " INTEGER NOT NULL," +
 			columnInviteCodeExpiredTime + " INTEGER NOT NULL," +
 			columnInviteCodeUsage + " VARCHAR(64) NOT NULL," +
+			columnInviteCodeStatus + " INTEGER NOT NULL," +
 			columnInviteCodeCode + " VARCHAR(128) NOT NULL UNIQUE," +
 			columnInviteCodeExtra + " TEXT NOT NULL DEFAULT ''," +
 			"FOREIGN KEY (" + columnInviteCodeFromUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +

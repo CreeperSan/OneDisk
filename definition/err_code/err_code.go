@@ -10,6 +10,7 @@ const (
 
 	UserNotExist  = 10001
 	UserForbidden = 10002
+	UserExist     = 10003
 
 	AuthTokenInvalid = 20001
 	AuthTokenExpired = 20002

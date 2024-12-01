@@ -101,3 +101,22 @@ func InviteCodeInvalid(userID int64, inviteCodeID int64) OperationResult {
 	}
 	return OperationResult{Code: errcode.OK}
 }
+
+// InviteCodeFindByCode
+// 根据邀请码查找邀请码
+func InviteCodeFindByCode(code string) (*InviteCode, OperationResult) {
+	var queryInviteCodes []InviteCode
+	queryResult := database.Where(&InviteCode{Code: code}).Find(&queryInviteCodes)
+	if queryResult.Error != nil {
+		log.Info(tag, "Error occurred while finding invite code by ID in InviteCodeFindByID()", zap.Error(queryResult.Error))
+		return nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Error occurred while finding invite code by ID",
+			Error:   queryResult.Error,
+		}
+	}
+	if len(queryInviteCodes) == 0 {
+		return nil, OperationResult{Code: errcode.OK}
+	}
+	return &queryInviteCodes[0], OperationResult{Code: errcode.OK}
+}

@@ -6,7 +6,7 @@ import (
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
 	"OneDisk/module/database"
-	"OneDisk/module/server"
+	"OneDisk/server"
 )
 
 func main() {

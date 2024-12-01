@@ -1,7 +1,7 @@
 package apiinvitecode
 
 import (
-	apiv1invitecode "OneDisk/module/server/api/invitecode/v1"
+	"OneDisk/server/api/invitecode/v1"
 	"github.com/gin-gonic/gin"
 )
 

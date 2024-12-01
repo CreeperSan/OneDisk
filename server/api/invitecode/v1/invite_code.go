@@ -3,8 +3,8 @@ package apiv1invitecode
 import (
 	httpcode "OneDisk/definition/http_code"
 	"OneDisk/module/database"
-	apimodel "OneDisk/module/server/api/const/model"
-	apimiddleware "OneDisk/module/server/api/middleware"
+	"OneDisk/server/api/const/model"
+	apimiddleware2 "OneDisk/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,14 +12,14 @@ func RegisterUserInviteCode(server *gin.Engine) {
 	requestGroup := server.Group("/api/user/v1/invite_code")
 
 	// 邀请码都需要已登录用户
-	requestGroup.Use(apimiddleware.AuthToken())
+	requestGroup.Use(apimiddleware2.AuthToken())
 	// 邀请码都需要管理员操作
-	requestGroup.Use(apimiddleware.AuthRequireAdminister())
+	requestGroup.Use(apimiddleware2.AuthRequireAdminister())
 
 	/* 邀请码 - 创建 */
 	requestGroup.POST("/generate", func(context *gin.Context) {
 		// 1、读取 UserID
-		contextHeader, _ := context.Get(apimiddleware.KeyHeader)
+		contextHeader, _ := context.Get(apimiddleware2.KeyHeader)
 		requestHeader, isInstance := contextHeader.(apimodel.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{
@@ -65,7 +65,7 @@ func RegisterUserInviteCode(server *gin.Engine) {
 			return
 		}
 		// 2、读取 UserID
-		contextHeader, _ := context.Get(apimiddleware.KeyHeader)
+		contextHeader, _ := context.Get(apimiddleware2.KeyHeader)
 		requestHeader, isInstance := contextHeader.(apimodel.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{

@@ -2,8 +2,8 @@ package apimiddleware
 
 import (
 	httpcode "OneDisk/definition/http_code"
-	apiconstheader "OneDisk/module/server/api/const/header"
-	apimodel "OneDisk/module/server/api/const/model"
+	"OneDisk/server/api/const/header"
+	"OneDisk/server/api/const/model"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )

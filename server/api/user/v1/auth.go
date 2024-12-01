@@ -4,8 +4,8 @@ import (
 	errcode "OneDisk/definition/err_code"
 	httpcode "OneDisk/definition/http_code"
 	"OneDisk/module/database"
-	apimodel "OneDisk/module/server/api/const/model"
-	apimiddleware "OneDisk/module/server/api/middleware"
+	"OneDisk/server/api/const/model"
+	apimiddleware2 "OneDisk/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,7 +16,7 @@ func RegisterUserAuth(server *gin.Engine) {
 		func(context *gin.Context) {
 			// 使用新的 Token 替换旧的 Token
 			// 1、读取 Header
-			contextHeader, _ := context.Get(apimiddleware.KeyHeader)
+			contextHeader, _ := context.Get(apimiddleware2.KeyHeader)
 			requestHeader, isInstance := contextHeader.(apimodel.Header)
 			if !isInstance {
 				context.JSON(httpcode.InternalError, gin.H{
@@ -67,7 +67,7 @@ func RegisterUserAuth(server *gin.Engine) {
 	/* 认证 - 校验Token */
 	server.POST(
 		"/api/user/v1/auth/token",
-		apimiddleware.AuthToken(),
+		apimiddleware2.AuthToken(),
 		func(context *gin.Context) {
 			// 中间件已经处理，可以直接返回
 			context.JSON(httpcode.OK, gin.H{

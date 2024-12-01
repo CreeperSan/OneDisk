@@ -5,7 +5,7 @@ import (
 	"OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	timeutils "OneDisk/lib/utils/time"
-	apiconstuser "OneDisk/module/server/api/const/user"
+	"OneDisk/server/api/const/user"
 	"go.uber.org/zap"
 )
 

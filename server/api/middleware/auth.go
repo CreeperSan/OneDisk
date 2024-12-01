@@ -4,7 +4,7 @@ import (
 	errcode "OneDisk/definition/err_code"
 	httpcode "OneDisk/definition/http_code"
 	"OneDisk/module/database"
-	apimodel "OneDisk/module/server/api/const/model"
+	"OneDisk/server/api/const/model"
 	"github.com/gin-gonic/gin"
 )
 

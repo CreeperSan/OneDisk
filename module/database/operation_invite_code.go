@@ -5,7 +5,7 @@ import (
 	"OneDisk/lib/log"
 	"OneDisk/lib/random"
 	timeutils "OneDisk/lib/utils/time"
-	apiconstinvitecode "OneDisk/module/server/api/const/invitecode"
+	apiconstinvitecode2 "OneDisk/server/api/const/invitecode"
 	"encoding/json"
 	"go.uber.org/zap"
 )
@@ -34,7 +34,7 @@ func InviteCodeFindByID(inviteCodeID int64) (*InviteCode, OperationResult) {
 func InviteCodeCreateAndSaveForRegister(fromUserID int64) (*InviteCode, OperationResult) {
 	// 1、实例化激活码
 	currentTimestamp := timeutils.Timestamp()
-	extraModel := apiconstinvitecode.ExtraForRegister{
+	extraModel := apiconstinvitecode2.ExtraForRegister{
 		UserType: ValueUserTypeNormal,
 	}
 	extraModelJsonStr, err := json.Marshal(extraModel)
@@ -49,7 +49,7 @@ func InviteCodeCreateAndSaveForRegister(fromUserID int64) (*InviteCode, Operatio
 	insertInviteCode := InviteCode{
 		FromUserID:  fromUserID,
 		CreateTime:  currentTimestamp,
-		ExpiredTime: currentTimestamp + apiconstinvitecode.TimeInviteCodeForRegisterDuration,
+		ExpiredTime: currentTimestamp + apiconstinvitecode2.TimeInviteCodeForRegisterDuration,
 		Usage:       ValueInviteCodeUsageRegister,
 		Status:      ValueInviteCodeStatusNotUse,
 		Code:        random.String(32),

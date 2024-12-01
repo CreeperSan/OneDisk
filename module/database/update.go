@@ -119,6 +119,18 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			columnInviteCodeExtra + " TEXT NOT NULL DEFAULT ''," +
 			"FOREIGN KEY (" + columnInviteCodeFromUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
+		// 创建存储表
+		db.Exec("CREATE TABLE IF NOT EXISTS " + tableStorage + " (" +
+			columnStorageID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+			columnStorageName + " VARCHAR(128) NOT NULL," +
+			columnStorageAvatar + " VARCHAR(256) NOT NULL DEFAULT ''," +
+			columnStorageCreateUserID + " INTEGER NOT NULL," +
+			columnStorageType + " INTEGER NOT NULL," +
+			columnStorageCreateTime + " INTEGER NOT NULL," +
+			columnStorageUpdateTime + " INTEGER NOT NULL," +
+			columnStorageConfig + " TEXT NOT NULL DEFAULT ''," +
+			"FOREIGN KEY (" + columnStorageCreateUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
+			")")
 		return definition.VersionDatabaseInitialize, nil
 	}
 	return currentVersion, nil

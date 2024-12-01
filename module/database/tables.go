@@ -105,3 +105,30 @@ type InviteCode struct {
 	Code        string `gorm:"column:code;"`
 	Extra       string `gorm:"column:extra;"` // 额外信息，json格式
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 存储空间配置
+
+const tableStorage = "storage"
+const columnStorageID = "id"
+const columnStorageCreateUserID = "create_user_id"
+const columnStorageName = "name"
+const columnStorageAvatar = "avatar"
+const columnStorageType = "type"
+const columnStorageCreateTime = "create_time"
+const columnStorageUpdateTime = "update_time"
+const columnStorageConfig = "config"
+
+const ValueStorageTypeUndefined = 0 // 未定义
+const ValueStorageTypePath = 1      // 本地路径
+const ValueStorageTypeCOS = 2       // 腾讯云对象存储
+
+type Storage struct {
+	ID           int64  `gorm:"column:id;"`
+	CreateUserID int64  `gorm:"column:create_user_id;"`
+	Name         string `gorm:"column:name;"`
+	Avatar       string `gorm:"column:avatar;"`
+	Type         int    `gorm:"column:type;"`
+	CreateTime   int64  `gorm:"column:create_time;"`
+	UpdateTime   int64  `gorm:"column:update_time;"`
+	Config       string `gorm:"column:config;"` // 配置信息，json格式
+}

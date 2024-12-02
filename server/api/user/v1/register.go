@@ -1,10 +1,10 @@
 package apiuserv1
 
 import (
-	errcode "OneDisk/definition/err_code"
-	httpcode "OneDisk/definition/http_code"
+	errcode "OneDisk/def/err_code"
+	httpcode "OneDisk/def/http_code"
+	"OneDisk/def/invitecode"
 	"OneDisk/module/database"
-	apiconstinvitecode "OneDisk/server/api/const/invitecode"
 	apimiddleware "OneDisk/server/api/middleware"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
@@ -118,7 +118,7 @@ func RegisterUserRegister(server *gin.Engine) {
 			})
 		}
 		// 5、解析邀请码的额外信息
-		var extraRegister apiconstinvitecode.ExtraForRegister
+		var extraRegister definvitecode.ExtraForRegister
 		if len(queryInviteCode.Extra) > 0 {
 			err := json.Unmarshal([]byte(queryInviteCode.Extra), &extraRegister)
 			if err != nil {

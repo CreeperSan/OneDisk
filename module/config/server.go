@@ -1,7 +1,7 @@
 package config
 
 import (
-	"OneDisk/definition"
+	"OneDisk/def"
 	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	"gopkg.in/yaml.v2"
@@ -29,7 +29,7 @@ func SetServer(server Server) error {
 	}
 
 	// 写入文件
-	err = os.WriteFile(definition.PathConfig, data, 0644)
+	err = os.WriteFile(def.PathConfig, data, 0644)
 	if err != nil {
 		log.Error(tag, string2.String("Failed to write config.yaml when set server, server=", server))
 		return err

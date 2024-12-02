@@ -1,7 +1,7 @@
 package database
 
 import (
-	errcode "OneDisk/definition/err_code"
+	errcode "OneDisk/def/err_code"
 	"OneDisk/lib/format/formatstring"
 	timeutils "OneDisk/lib/utils/time"
 )

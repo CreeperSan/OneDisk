@@ -1,4 +1,4 @@
-package definition
+package def
 
 const PathConfig = "config.yaml" // 配置文件路径
 

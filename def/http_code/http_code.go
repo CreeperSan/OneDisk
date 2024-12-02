@@ -1,4 +1,4 @@
-package httpcode
+package defhttpcode
 
 const (
 	OK = 200

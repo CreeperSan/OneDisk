@@ -1,4 +1,4 @@
-package definition
+package def
 
 const (
 	ExitCodeOK = 0

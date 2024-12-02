@@ -1,7 +1,7 @@
 package database
 
 import (
-	definition2 "OneDisk/definition"
+	definition2 "OneDisk/def"
 	"OneDisk/lib/format/formatstring"
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"

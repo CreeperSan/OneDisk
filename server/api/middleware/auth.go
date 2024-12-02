@@ -1,10 +1,10 @@
 package apimiddleware
 
 import (
-	errcode "OneDisk/definition/err_code"
-	httpcode "OneDisk/definition/http_code"
+	errcode "OneDisk/def/err_code"
+	defheader "OneDisk/def/header"
+	httpcode "OneDisk/def/http_code"
 	"OneDisk/module/database"
-	"OneDisk/server/api/const/model"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,7 +12,7 @@ func AuthToken() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		// 读取 Header
 		contextHeader, _ := context.Get(KeyHeader)
-		requestHeader, isInstance := contextHeader.(apimodel.Header)
+		requestHeader, isInstance := contextHeader.(defheader.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{
 				"code": httpcode.InternalError,

@@ -1,7 +1,7 @@
 package config
 
 import (
-	"OneDisk/definition"
+	"OneDisk/def"
 	"OneDisk/lib/log"
 	"OneDisk/lib/utils/file"
 	"errors"
@@ -14,7 +14,7 @@ const tag = "Config"
 func Initialize() error {
 	log.Info(tag, "Config initializing...")
 
-	const pathConfig = definition.PathConfig
+	const pathConfig = def.PathConfig
 	// 文件检查
 	if !fileutils.Exists(pathConfig) {
 		log.Info(tag, "Config.yaml not found, creating...")

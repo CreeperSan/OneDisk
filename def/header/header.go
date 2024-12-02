@@ -1,4 +1,4 @@
-package apiconstheader
+package defheader
 
 const (
 	Token       = "one-disk-token"

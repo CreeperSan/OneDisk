@@ -1,11 +1,11 @@
 package database
 
 import (
-	errcode "OneDisk/definition/err_code"
+	errcode "OneDisk/def/err_code"
+	"OneDisk/def/user"
 	"OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	timeutils "OneDisk/lib/utils/time"
-	"OneDisk/server/api/const/user"
 	"go.uber.org/zap"
 )
 
@@ -141,8 +141,8 @@ func UserTokenCreateAndInsert(
 		MachineCode:            machineCode,
 		MachineName:            machineName,
 		RefreshToken:           formatstring.GenerateRefreshToken(),
-		TokenExpireTime:        currentTimestamp + apiconstuser.TimeTokenDuration,
-		RefreshTokenExpireTime: currentTimestamp + apiconstuser.TimeRefreshTokenDuration,
+		TokenExpireTime:        currentTimestamp + defuser.TimeTokenDuration,
+		RefreshTokenExpireTime: currentTimestamp + defuser.TimeRefreshTokenDuration,
 		CreateTime:             currentTimestamp,
 		LastAccessTime:         currentTimestamp,
 		LastRefreshTime:        currentTimestamp,
@@ -228,7 +228,7 @@ func UserTokenRefresh(
 	}
 	// 生成新的 Token
 	queryUserToken.Token = formatstring.GenerateToken()
-	queryUserToken.TokenExpireTime = currentTime + apiconstuser.TimeTokenDuration
+	queryUserToken.TokenExpireTime = currentTime + defuser.TimeTokenDuration
 	queryUserToken.LastRefreshTime = currentTime
 	queryResult = database.Save(&queryUserToken)
 	if queryResult.Error != nil {

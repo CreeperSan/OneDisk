@@ -1,7 +1,7 @@
 package main
 
 import (
-	"OneDisk/definition"
+	"OneDisk/def"
 	"OneDisk/lib/lifecycle"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
@@ -17,28 +17,28 @@ func main() {
 	// 配置文件初始化
 	err := config.Initialize()
 	if err != nil {
-		lifecycle.Exit(definition.ExitCodeConfigInitialize)
+		lifecycle.Exit(def.ExitCodeConfigInitialize)
 		return
 	}
 
 	// 数据库配置初始化
 	err = database.Initialize()
 	if err != nil {
-		lifecycle.Exit(definition.ExitCodeDatabaseInitialize)
+		lifecycle.Exit(def.ExitCodeDatabaseInitialize)
 		return
 	}
 
 	// 服务器配置初始化
 	err = server.Initialize()
 	if err != nil {
-		lifecycle.Exit(definition.ExitCodeServerInitialize)
+		lifecycle.Exit(def.ExitCodeServerInitialize)
 		return
 	}
 
 	// 启动服务器
 	err = server.StartServer()
 	if err != nil {
-		lifecycle.Exit(definition.ExitCodeServerStart)
+		lifecycle.Exit(def.ExitCodeServerStart)
 		return
 	}
 }

@@ -1,3 +1,3 @@
-package definition
+package def
 
 const DatabaseSqlite = "sqlite3"

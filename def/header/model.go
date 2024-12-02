@@ -1,4 +1,4 @@
-package apimodel
+package defheader
 
 type Header struct {
 	Token       string

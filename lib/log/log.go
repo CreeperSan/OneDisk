@@ -1,7 +1,7 @@
 package log
 
 import (
-	definition2 "OneDisk/definition"
+	definition2 "OneDisk/def"
 	string2 "OneDisk/lib/format/formatstring"
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"

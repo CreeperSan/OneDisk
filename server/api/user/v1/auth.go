@@ -1,10 +1,10 @@
 package apiuserv1
 
 import (
-	errcode "OneDisk/definition/err_code"
-	httpcode "OneDisk/definition/http_code"
+	errcode "OneDisk/def/err_code"
+	defheader "OneDisk/def/header"
+	httpcode "OneDisk/def/http_code"
 	"OneDisk/module/database"
-	"OneDisk/server/api/const/model"
 	apimiddleware2 "OneDisk/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +17,7 @@ func RegisterUserAuth(server *gin.Engine) {
 			// 使用新的 Token 替换旧的 Token
 			// 1、读取 Header
 			contextHeader, _ := context.Get(apimiddleware2.KeyHeader)
-			requestHeader, isInstance := contextHeader.(apimodel.Header)
+			requestHeader, isInstance := contextHeader.(defheader.Header)
 			if !isInstance {
 				context.JSON(httpcode.InternalError, gin.H{
 					"code": httpcode.InternalError,

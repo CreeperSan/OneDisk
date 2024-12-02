@@ -1,7 +1,7 @@
 package config
 
 import (
-	definition2 "OneDisk/definition"
+	definition2 "OneDisk/def"
 	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
 	"errors"

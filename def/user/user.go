@@ -1,4 +1,4 @@
-package apiconstuser
+package defuser
 
 const (
 	TimeTokenDuration        = 24 * 60 * 60 * 1000

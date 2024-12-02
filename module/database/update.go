@@ -1,7 +1,7 @@
 package database
 
 import (
-	"OneDisk/definition"
+	"OneDisk/def"
 	"OneDisk/lib/format/formatstring"
 	string2 "OneDisk/lib/format/formatstring"
 	"OneDisk/lib/log"
@@ -36,7 +36,7 @@ func checkAndUpgradeVersion(db *gorm.DB) error {
 
 	log.Info(tag, string2.String("Current database version is %d", databaseVersion))
 
-	for databaseVersion < definition.VersionDatabaseLatest {
+	for databaseVersion < def.VersionDatabaseLatest {
 		latestVersion, err := upgradeDatabase(db, databaseVersion)
 		if err != nil {
 			log.Error(tag, "Failed to upgrade database", zap.Error(err))
@@ -55,7 +55,7 @@ func checkAndUpgradeVersion(db *gorm.DB) error {
 }
 
 func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
-	if currentVersion < definition.VersionDatabaseInitialize {
+	if currentVersion < def.VersionDatabaseInitialize {
 		/* 数据库初版初始化 */
 		// 创建用户表
 		db.Exec("CREATE TABLE IF NOT EXISTS " + tableUser + " (" +
@@ -131,7 +131,7 @@ func upgradeDatabase(db *gorm.DB, currentVersion int) (int, error) {
 			columnStorageConfig + " TEXT NOT NULL DEFAULT ''," +
 			"FOREIGN KEY (" + columnStorageCreateUserID + ") REFERENCES " + tableUser + "(" + columnUserID + ") ON DELETE CASCADE" +
 			")")
-		return definition.VersionDatabaseInitialize, nil
+		return def.VersionDatabaseInitialize, nil
 	}
 	return currentVersion, nil
 }

@@ -1,9 +1,9 @@
 package apiv1invitecode
 
 import (
-	httpcode "OneDisk/definition/http_code"
+	"OneDisk/def/header"
+	httpcode "OneDisk/def/http_code"
 	"OneDisk/module/database"
-	"OneDisk/server/api/const/model"
 	apimiddleware2 "OneDisk/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +20,7 @@ func RegisterUserInviteCode(server *gin.Engine) {
 	requestGroup.POST("/generate", func(context *gin.Context) {
 		// 1、读取 UserID
 		contextHeader, _ := context.Get(apimiddleware2.KeyHeader)
-		requestHeader, isInstance := contextHeader.(apimodel.Header)
+		requestHeader, isInstance := contextHeader.(defheader.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{
 				"code": httpcode.InternalError,
@@ -66,7 +66,7 @@ func RegisterUserInviteCode(server *gin.Engine) {
 		}
 		// 2、读取 UserID
 		contextHeader, _ := context.Get(apimiddleware2.KeyHeader)
-		requestHeader, isInstance := contextHeader.(apimodel.Header)
+		requestHeader, isInstance := contextHeader.(defheader.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{
 				"code": httpcode.InternalError,

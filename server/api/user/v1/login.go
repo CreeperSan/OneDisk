@@ -1,10 +1,10 @@
 package apiuserv1
 
 import (
-	errcode "OneDisk/definition/err_code"
-	httpcode "OneDisk/definition/http_code"
+	errcode "OneDisk/def/err_code"
+	defheader "OneDisk/def/header"
+	httpcode "OneDisk/def/http_code"
 	"OneDisk/module/database"
-	"OneDisk/server/api/const/model"
 	"OneDisk/server/api/middleware"
 	"github.com/gin-gonic/gin"
 )
@@ -14,7 +14,7 @@ func RegisterUserLogin(server *gin.Engine) {
 	server.POST("/api/user/v1/login", func(context *gin.Context) {
 		// 检查 Header
 		contextHeader, _ := context.Get(apimiddleware.KeyHeader)
-		requestHeader, isInstance := contextHeader.(apimodel.Header)
+		requestHeader, isInstance := contextHeader.(defheader.Header)
 		if !isInstance {
 			context.JSON(httpcode.InternalError, gin.H{
 				"code": httpcode.InternalError,

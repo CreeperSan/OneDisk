@@ -1,9 +1,8 @@
 package apimiddleware
 
 import (
-	httpcode "OneDisk/definition/http_code"
-	"OneDisk/server/api/const/header"
-	"OneDisk/server/api/const/model"
+	"OneDisk/def/header"
+	httpcode "OneDisk/def/http_code"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -11,11 +10,11 @@ import (
 func HeaderConvert() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		// 读取 Header
-		headerToken := context.GetHeader(apiconstheader.Token)
-		headerMachineCode := context.GetHeader(apiconstheader.MachineCode)
-		headerMachineName := context.GetHeader(apiconstheader.MachineName)
-		headerPlatform := context.GetHeader(apiconstheader.Platform)
-		headerUserID := context.GetHeader(apiconstheader.UserID)
+		headerToken := context.GetHeader(defheader.Token)
+		headerMachineCode := context.GetHeader(defheader.MachineCode)
+		headerMachineName := context.GetHeader(defheader.MachineName)
+		headerPlatform := context.GetHeader(defheader.Platform)
+		headerUserID := context.GetHeader(defheader.UserID)
 
 		// 参数转换
 		headerPlatformInt, err := strconv.Atoi(headerPlatform)
@@ -38,7 +37,7 @@ func HeaderConvert() gin.HandlerFunc {
 		}
 
 		// 写入数据
-		context.Set(apiconstheader.Token, apimodel.Header{
+		context.Set(defheader.Token, defheader.Header{
 			Token:       headerToken,
 			UserID:      headerUserIDInt,
 			MachineCode: headerMachineCode,

@@ -35,6 +35,22 @@ func UserFindUser(userID int64) (*User, OperationResult) {
 	return &queryUsers[0], OperationResult{Code: errcode.OK}
 }
 
+// UserFindUserActiveStatus
+// 查询正常状态的用户
+func UserFindUserActiveStatus(userID int64) (*User, OperationResult) {
+	queryUser, result := UserFindUser(userID)
+	if result.Code != errcode.OK {
+		return nil, result
+	}
+	if queryUser.Status != ValueUserStatusActive {
+		return nil, OperationResult{
+			Code:    errcode.UserForbidden,
+			Message: "User status error",
+		}
+	}
+	return queryUser, OperationResult{Code: errcode.OK}
+}
+
 // UserFindUserByUsername
 // 通过用户名查询用户
 func UserFindUserByUsername(username string) (*User, OperationResult) {

@@ -14,7 +14,7 @@ func RegisterStorage(server *gin.Engine) {
 
 	/* 添加存储 */
 	server.POST(
-		"/api/storage/v1/add",
+		"/api/storage/v1/create",
 		apimiddleware.AuthRequireAdminister(),
 		func(context *gin.Context) {
 			// 1、读取 Header 信息
@@ -96,6 +96,15 @@ func RegisterStorage(server *gin.Engine) {
 					})
 					return
 				}
+				// 4.1.4、默认建立创建人和与存储策略的对应关系
+				_, result = database.StorageUserRelationCreateIfEmpty(requestHeader.UserID, insertStorage.ID)
+				if result.Code != defhttpcode.OK {
+					context.JSON(result.Code, gin.H{
+						"code": result.Code,
+						"msg":  "存储策略创建成功，但建立自身用户关联失败",
+					})
+					return
+				}
 				// 4.1.4、返回结果
 				context.JSON(defhttpcode.OK, gin.H{
 					"code": defhttpcode.OK,
@@ -117,6 +126,97 @@ func RegisterStorage(server *gin.Engine) {
 			context.JSON(defhttpcode.ParamsError, gin.H{
 				"code": defhttpcode.ParamsError,
 				"msg":  "不支持的存储类型",
+			})
+		},
+	)
+
+	/* 获取存储配置列表 */
+	server.GET(
+		"/api/storage/v1/list",
+		apimiddleware.AuthToken(),
+		func(context *gin.Context) {
+			// 1、读取 Header 信息
+			contextHeader, _ := context.Get(apimiddleware.KeyHeader)
+			requestHeader, isInstance := contextHeader.(defheader.Header)
+			if !isInstance {
+				context.JSON(defhttpcode.InternalError, gin.H{
+					"code": defhttpcode.InternalError,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取配置
+			queryStorages, result := database.StorageUserRelationList(requestHeader.UserID)
+			if result.Code != defhttpcode.OK {
+				context.JSON(result.Code, gin.H{
+					"code": result.Code,
+					"msg":  "操作失败",
+				})
+				return
+			}
+			// 3、返回结果
+			var storageList []gin.H
+			for _, storage := range queryStorages {
+				storageList = append(storageList, gin.H{
+					"id":             storage.ID,
+					"create_user_id": storage.CreateUserID,
+					"name":           storage.Name,
+					"avatar":         storage.Avatar,
+					"type":           storage.Type,
+					"create_time":    storage.CreateTime,
+					"update_time":    storage.UpdateTime,
+					"config":         storage.Config,
+				})
+			}
+			context.JSON(defhttpcode.OK, gin.H{
+				"code": defhttpcode.OK,
+				"msg":  "操作成功",
+				"data": storageList,
+			})
+		},
+	)
+
+	/* 获取自己创建的存储配置列表 */
+	server.GET(
+		"/api/storage/v1/create/list",
+		func(context *gin.Context) {
+			// 1、读取 Header 信息
+			contextHeader, _ := context.Get(apimiddleware.KeyHeader)
+			requestHeader, isInstance := contextHeader.(defheader.Header)
+			if !isInstance {
+				context.JSON(defhttpcode.InternalError, gin.H{
+					"code": defhttpcode.InternalError,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取配置
+			queryStorages, result := database.StorageListByCreatUserID(requestHeader.UserID)
+			if result.Code != defhttpcode.OK {
+				context.JSON(result.Code, gin.H{
+					"code": result.Code,
+					"msg":  "操作失败",
+				})
+				return
+			}
+			// 3、返回结果
+			var storageList []gin.H
+			for _, storage := range queryStorages {
+				storageList = append(storageList, gin.H{
+					"id":             storage.ID,
+					"create_user_id": storage.CreateUserID,
+					"name":           storage.Name,
+					"avatar":         storage.Avatar,
+					"type":           storage.Type,
+					"create_time":    storage.CreateTime,
+					"update_time":    storage.UpdateTime,
+					"config":         storage.Config,
+				})
+			}
+			context.JSON(defhttpcode.OK, gin.H{
+				"code": defhttpcode.OK,
+				"msg":  "操作成功",
+				"data": storageList,
 			})
 		},
 	)

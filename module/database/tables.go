@@ -132,3 +132,18 @@ type Storage struct {
 	UpdateTime   int64  `gorm:"column:update_time;"`
 	Config       string `gorm:"column:config;"` // 配置信息，json格式
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 存储空间-用户对应关系
+
+const tableStorageUserRelation = "storage_user_relation"
+const columnStorageUserRelationID = "id"
+const columnStorageUserRelationStorageID = "storage_id"
+const columnStorageUserRelationUserID = "user_id"
+const columnStorageUserRelationCreateTime = "create_time"
+
+type StorageUserRelation struct {
+	ID         int64 `gorm:"column:id;"`
+	StorageID  int64 `gorm:"column:storage_id;"`
+	UserID     int64 `gorm:"column:user_id;"`
+	CreateTime int64 `gorm:"column:create_time;"`
+}

@@ -29,3 +29,43 @@ func StorageCreateAndSaveForLocalPath(name string, avatar string, userID int64, 
 	}
 	return &storage, OperationResult{Code: errcode.OK}
 }
+
+// StorageFind
+// 根据存储 ID 查找存储
+func StorageFind(storageID int64) (*Storage, OperationResult) {
+	var storage Storage
+	findResult := database.First(&storage, storageID)
+	if findResult.Error != nil {
+		return nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Error occurred while finding storage at StorageFind()",
+		}
+	}
+	return &storage, OperationResult{Code: errcode.OK}
+}
+
+// StorageListByCreatUserID
+// 根据创建用户 ID 查找存储列表
+func StorageListByCreatUserID(userID int64) ([]Storage, OperationResult) {
+	// 1、查找用户是否合法
+	queryUser, result := UserFindUserActiveStatus(userID)
+	if result.Code != errcode.OK {
+		return nil, result
+	}
+	if queryUser == nil {
+		return nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "User not found",
+		}
+	}
+	// 2、查找存储列表
+	var storageList []Storage
+	queryStorageError := database.Where(&Storage{CreateUserID: userID}).Find(&storageList).Error
+	if queryStorageError != nil {
+		return nil, OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Error occurred while finding storage at StorageListByCreatUserID()",
+		}
+	}
+	return storageList, OperationResult{Code: errcode.OK}
+}

@@ -57,11 +57,6 @@ func (storage *PlatformInterfaceLocal) List(path string) ([]File, database.Opera
 	var tmpFiles []File
 	for _, tmpFile := range tmpFilePathEntity {
 		entityPath := filepath.Join(tmpFilePath, tmpFile.Name())
-		entityStat, err := os.Stat(entityPath)
-		if err != nil {
-			log.Warming(tag, "Error occur while os.Stat", zap.Error(err))
-			continue
-		}
 		tmpFileInfo, err := tmpFile.Info()
 		if err != nil {
 			log.Warming(tag, "Error occur while tmpFile.Info", zap.Error(err))
@@ -77,7 +72,6 @@ func (storage *PlatformInterfaceLocal) List(path string) ([]File, database.Opera
 				}
 				return FileTypeFile
 			}(),
-			CreateTime: tmpFileInfo.ModTime().Unix(),
 			UpdateTime: tmpFileInfo.ModTime().Unix(),
 		})
 	}

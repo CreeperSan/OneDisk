@@ -7,6 +7,7 @@ import (
 	"OneDisk/module/config"
 	"OneDisk/server/api/invitecode"
 	"OneDisk/server/api/middleware"
+	apistorage "OneDisk/server/api/storage"
 	"OneDisk/server/api/user"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -76,6 +77,7 @@ func StartServer() error {
 	// 模块接口注册
 	apiuser.Register(server)
 	apiinvitecode.Register(server)
+	apistorage.Register(server)
 
 	err := server.Run()
 	if err != nil {

@@ -14,4 +14,6 @@ const (
 
 	AuthTokenInvalid = 20001
 	AuthTokenExpired = 20002
+
+	FileCanNotReadDirectory = 30000
 )

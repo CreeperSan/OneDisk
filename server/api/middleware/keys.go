@@ -4,4 +4,5 @@ const (
 	KeyHeader    = "header"
 	KeyUser      = "user"
 	KeyUserToken = "user_token"
+	KeyStorage   = "storage"
 )

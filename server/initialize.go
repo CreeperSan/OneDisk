@@ -5,6 +5,7 @@ import (
 	"OneDisk/lib/input"
 	"OneDisk/lib/log"
 	"OneDisk/module/config"
+	apifile "OneDisk/server/api/file"
 	"OneDisk/server/api/invitecode"
 	"OneDisk/server/api/middleware"
 	apistorage "OneDisk/server/api/storage"
@@ -78,6 +79,7 @@ func StartServer() error {
 	apiuser.Register(server)
 	apiinvitecode.Register(server)
 	apistorage.Register(server)
+	apifile.Register(server)
 
 	err := server.Run()
 	if err != nil {

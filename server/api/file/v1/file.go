@@ -31,6 +31,7 @@ func convertFileToJson(file storage2.File) (gin.H, error) {
 
 func RegisterFile(server *gin.Engine) {
 
+	/* 文件 - 获取文件列表 */
 	server.GET(
 		"/api/file/v1/list",
 		apifilemiddleware.StorageGetPlatformInterface(),
@@ -43,7 +44,6 @@ func RegisterFile(server *gin.Engine) {
 					"code": 500,
 					"msg":  "服务器内部错误，请稍后重试",
 				})
-				context.Abort()
 				return
 			}
 			// 2、读取参数
@@ -73,6 +73,237 @@ func RegisterFile(server *gin.Engine) {
 				"code": httpcode.OK,
 				"msg":  "操作成功",
 				"data": dataFileList,
+			})
+		},
+	)
+
+	/* 文件 - 创建文件夹 */
+	server.PUT(
+		"/api/file/v1/create_directory",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+			// 1、读取配置
+			contextHeader, _ := context.Get(apimiddleware.KeyStorage)
+			storage, isInstance := contextHeader.(storage2.PlatformInterface)
+			if !isInstance {
+				context.JSON(500, gin.H{
+					"code": 500,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取参数
+			type RequestData struct {
+				Path string `json:"path"`
+				Name string `json:"name"`
+			}
+			var requestData RequestData
+			err := context.BindJSON(&requestData)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			// 3、调用平台接口
+			createDirectory, result := storage.CreateDirectory(requestData.Path + "/" + requestData.Name)
+			if result.Code != errcode.OK {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": result.Code,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			if createDirectory == nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "创建失败",
+				})
+				return
+			}
+			// 4. 返回结果
+			data, err := convertFileToJson(*createDirectory)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "创建失败",
+				})
+				return
+			}
+			context.JSON(httpcode.OK, gin.H{
+				"code": httpcode.OK,
+				"msg":  "操作成功",
+				"data": data,
+			})
+		},
+	)
+
+	/* 文件 - 创建文件 */
+	server.PUT(
+		"/api/file/v1/create_file",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+			// 1、读取配置
+			contextHeader, _ := context.Get(apimiddleware.KeyStorage)
+			storage, isInstance := contextHeader.(storage2.PlatformInterface)
+			if !isInstance {
+				context.JSON(500, gin.H{
+					"code": 500,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取参数
+			type RequestData struct {
+				Path string `json:"path"`
+				Name string `json:"name"`
+			}
+			var requestData RequestData
+			err := context.BindJSON(&requestData)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			// 3、调用平台接口
+			createDirectory, result := storage.CreateFile(requestData.Path + "/" + requestData.Name)
+			if result.Code != errcode.OK {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": result.Code,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			if createDirectory == nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "创建失败",
+				})
+				return
+			}
+			// 4. 返回结果
+			data, err := convertFileToJson(*createDirectory)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "创建失败",
+				})
+				return
+			}
+			context.JSON(httpcode.OK, gin.H{
+				"code": httpcode.OK,
+				"msg":  "操作成功",
+				"data": data,
+			})
+		},
+	)
+
+	/* 文件 - 删除文件 */
+	server.DELETE(
+		"/api/file/v1/delete",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+			// 1、读取配置
+			contextHeader, _ := context.Get(apimiddleware.KeyStorage)
+			storage, isInstance := contextHeader.(storage2.PlatformInterface)
+			if !isInstance {
+				context.JSON(500, gin.H{
+					"code": 500,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取参数
+			type RequestData struct {
+				Path string `json:"path"`
+				Name string `json:"name"`
+			}
+			var requestData RequestData
+			err := context.BindJSON(&requestData)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			// 3、调用平台接口
+			result := storage.Delete(requestData.Path + "/" + requestData.Name)
+			if result.Code != errcode.OK {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": result.Code,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			context.JSON(httpcode.OK, gin.H{
+				"code": httpcode.OK,
+				"msg":  "操作成功",
+			})
+		},
+	)
+
+	/* 文件 - 移动文件 */
+	server.POST(
+		"/api/file/v1/move",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+			// 1、读取配置
+			contextHeader, _ := context.Get(apimiddleware.KeyStorage)
+			storage, isInstance := contextHeader.(storage2.PlatformInterface)
+			if !isInstance {
+				context.JSON(500, gin.H{
+					"code": 500,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取参数
+			type RequestData struct {
+				FromPath string `json:"from_path"`
+				ToPath   string `json:"to_path"`
+			}
+			var requestData RequestData
+			err := context.BindJSON(&requestData)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			// 3、调用平台接口
+			createDirectory, result := storage.Move(requestData.FromPath, requestData.ToPath)
+			if result.Code != errcode.OK {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": result.Code,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			if createDirectory == nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "创建失败",
+				})
+				return
+			}
+			// 4. 返回结果
+			data, err := convertFileToJson(*createDirectory)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "创建失败",
+				})
+				return
+			}
+			context.JSON(httpcode.OK, gin.H{
+				"code": httpcode.OK,
+				"msg":  "操作成功",
+				"data": data,
 			})
 		},
 	)

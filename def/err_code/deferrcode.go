@@ -15,5 +15,8 @@ const (
 	AuthTokenInvalid = 20001
 	AuthTokenExpired = 20002
 
-	FileCanNotReadDirectory = 30000
+	FileAlreadyExist                = 30000
+	FileNotExist                    = 30001
+	FileCanNotReadDirectory         = 30002
+	FileCanNotCreateParentDirectory = 30003
 )

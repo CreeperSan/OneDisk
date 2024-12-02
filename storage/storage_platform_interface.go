@@ -10,17 +10,17 @@ type PlatformInterface interface {
 
 	// CreateFile
 	// 创建一个文件
-	CreateFile(path string)
+	CreateFile(path string) (*File, database.OperationResult)
 
 	// CreateDirectory
 	// 创建一个目录
-	CreateDirectory(path string)
+	CreateDirectory(path string) (*File, database.OperationResult)
 
 	// Delete
 	// 删除一个文件或目录
-	Delete(path string)
+	Delete(path string) database.OperationResult
 
 	// Move
 	// 移动一个文件或目录
-	Move(path string, newPath string)
+	Move(path string, newPath string) (*File, database.OperationResult)
 }

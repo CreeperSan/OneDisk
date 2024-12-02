@@ -4,11 +4,16 @@ import (
 	defheader "OneDisk/def/header"
 	defhttpcode "OneDisk/def/http_code"
 	defstorage "OneDisk/def/storage"
+	"OneDisk/lib/format/formatstring"
+	"OneDisk/lib/log"
 	"OneDisk/module/database"
 	apimiddleware "OneDisk/server/api/middleware"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
+
+const tag = "ApiStorageV1"
 
 func RegisterStorage(server *gin.Engine) {
 
@@ -157,6 +162,12 @@ func RegisterStorage(server *gin.Engine) {
 			// 3、返回结果
 			var storageList []gin.H
 			for _, storage := range queryStorages {
+				var configData map[string]interface{}
+				errJson := json.Unmarshal([]byte(storage.Config), &configData)
+				if errJson != nil {
+					log.Warming(tag, formatstring.String("Unmarshal storage config failed, storageID=%d, configJson=%s", storage.ID, storage.Config), zap.Error(errJson))
+					continue
+				}
 				storageList = append(storageList, gin.H{
 					"id":             storage.ID,
 					"create_user_id": storage.CreateUserID,
@@ -165,7 +176,7 @@ func RegisterStorage(server *gin.Engine) {
 					"type":           storage.Type,
 					"create_time":    storage.CreateTime,
 					"update_time":    storage.UpdateTime,
-					"config":         storage.Config,
+					"config":         gin.H(configData),
 				})
 			}
 			context.JSON(defhttpcode.OK, gin.H{
@@ -202,6 +213,12 @@ func RegisterStorage(server *gin.Engine) {
 			// 3、返回结果
 			var storageList []gin.H
 			for _, storage := range queryStorages {
+				var configData map[string]interface{}
+				errJson := json.Unmarshal([]byte(storage.Config), &configData)
+				if errJson != nil {
+					log.Warming(tag, formatstring.String("Unmarshal storage config failed, storageID=%d, configJson=%s", storage.ID, storage.Config), zap.Error(errJson))
+					continue
+				}
 				storageList = append(storageList, gin.H{
 					"id":             storage.ID,
 					"create_user_id": storage.CreateUserID,
@@ -210,7 +227,7 @@ func RegisterStorage(server *gin.Engine) {
 					"type":           storage.Type,
 					"create_time":    storage.CreateTime,
 					"update_time":    storage.UpdateTime,
-					"config":         storage.Config,
+					"config":         gin.H(configData),
 				})
 			}
 			context.JSON(defhttpcode.OK, gin.H{

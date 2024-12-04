@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"path/filepath"
 )
 
 const tag = "ApiFileV1"
@@ -297,6 +298,77 @@ func RegisterFile(server *gin.Engine) {
 				context.JSON(httpcode.ParamsError, gin.H{
 					"code": httpcode.ParamsError,
 					"msg":  "创建失败",
+				})
+				return
+			}
+			context.JSON(httpcode.OK, gin.H{
+				"code": httpcode.OK,
+				"msg":  "操作成功",
+				"data": data,
+			})
+		},
+	)
+
+	/* 文件 - 上传文件 */
+	server.POST(
+		"/api/file/v1/upload",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+			// 1、读取配置
+			contextHeader, _ := context.Get(apimiddleware.KeyStorage)
+			storage, isInstance := contextHeader.(storage2.PlatformInterface)
+			if !isInstance {
+				context.JSON(500, gin.H{
+					"code": 500,
+					"msg":  "服务器内部错误，请稍后重试",
+				})
+				return
+			}
+			// 2、读取文件
+			requestFile, err := context.FormFile("file")
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			// 3、读取文件路径
+			type RequestParams struct {
+				Path string `json:"path"`
+			}
+			var requestParams RequestParams
+			err = context.BindJSON(&requestParams)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			requestPathAbsolute, err := filepath.Abs(requestParams.Path)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "请求参数错误",
+				})
+				return
+			}
+			// 4、调用平台接口
+			resultFile, result := storage.Upload(context, requestFile, requestPathAbsolute)
+			if result.Code != errcode.OK {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": result.Code,
+					"msg":  "上传文件失败，请稍后重试",
+				})
+				return
+			}
+			// 5、返回上传的文件信息
+			data, err := convertFileToJson(*resultFile)
+			if err != nil {
+				context.JSON(httpcode.ParamsError, gin.H{
+					"code": httpcode.ParamsError,
+					"msg":  "上传文件失败，请稍后重试",
 				})
 				return
 			}

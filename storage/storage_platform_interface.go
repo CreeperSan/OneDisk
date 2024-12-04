@@ -1,6 +1,10 @@
 package storage
 
-import "OneDisk/module/database"
+import (
+	"OneDisk/module/database"
+	"github.com/gin-gonic/gin"
+	"mime/multipart"
+)
 
 type PlatformInterface interface {
 
@@ -23,4 +27,8 @@ type PlatformInterface interface {
 	// Move
 	// 移动一个文件或目录
 	Move(path string, newPath string) (*File, database.OperationResult)
+
+	// Upload
+	// 上传一个文件
+	Upload(context *gin.Context, requestFile *multipart.FileHeader, path string) (*File, database.OperationResult)
 }

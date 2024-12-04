@@ -4,7 +4,9 @@ import (
 	errcode "OneDisk/def/err_code"
 	"OneDisk/lib/log"
 	"OneDisk/module/database"
+	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"mime/multipart"
 	"os"
 	"path/filepath"
 	"strings"
@@ -271,5 +273,61 @@ func (storage *PlatformInterfaceLocal) Move(fromFilePath string, toFilePath stri
 		Type:       convertBoolToFileType(createDirectory.IsDir()),
 		Size:       createDirectory.Size(),
 		UpdateTime: createDirectory.ModTime().Unix(),
+	}, database.OperationResult{Code: errcode.OK}
+}
+
+func (storage *PlatformInterfaceLocal) Upload(context *gin.Context, requestFile *multipart.FileHeader, path string) (*File, database.OperationResult) {
+	// 1、检查 Path 是否存在于目录下
+	// 1.1、拼接路径
+	tmpFilePath := filepath.Clean(storage.Root + "/" + path)
+	tmpRootPath := filepath.Clean(storage.Root)
+	// 1.2、校验是否为子目录
+	if len(tmpRootPath) < len(tmpFilePath) || strings.Index(tmpRootPath, tmpFilePath) != 0 {
+		return nil, database.OperationResult{
+			Code:    errcode.ParamsError,
+			Message: "File path is not exist",
+		}
+	}
+	// 1.3、检查目录是否存在
+	tmpFileStat, err := os.Stat(tmpFilePath)
+	if tmpFileStat != nil || err != nil {
+		return nil, database.OperationResult{
+			Code:    errcode.FileCanNotReadDirectory,
+			Message: "File path is already exist",
+		}
+	}
+	// 1.4、检查父目录是否创建，如果没有则创建
+	tmpFileParentPath := filepath.Dir(tmpFilePath)
+	if _, err := os.Stat(tmpFileParentPath); err != nil {
+		err = os.MkdirAll(tmpFileParentPath, os.ModePerm)
+		if err != nil {
+			return nil, database.OperationResult{
+				Code:    errcode.FileCanNotCreateParentDirectory,
+				Message: "Can not create parent directory",
+			}
+		}
+	}
+	// 2、保存文件
+	err = context.SaveUploadedFile(requestFile, path)
+	if err != nil {
+		return nil, database.OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Can not save file",
+		}
+	}
+	// 3、获取文件信息并返回
+	tmpFile, err := os.Stat(tmpFilePath)
+	if err != nil {
+		return nil, database.OperationResult{
+			Code:    errcode.DatabaseExecuteError,
+			Message: "Can not get file info",
+		}
+	}
+	return &File{
+		Name:       tmpFile.Name(),
+		Path:       path,
+		Type:       FileTypeFile,
+		Size:       tmpFile.Size(),
+		UpdateTime: tmpFile.ModTime().Unix(),
 	}, database.OperationResult{Code: errcode.OK}
 }

@@ -4,11 +4,9 @@ import (
 	errcode "OneDisk/def/err_code"
 	defheader "OneDisk/def/header"
 	httpcode "OneDisk/def/http_code"
-	defstorage "OneDisk/def/storage"
 	"OneDisk/module/database"
 	apimiddleware "OneDisk/server/api/middleware"
 	"OneDisk/storage"
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"strconv"
 )
@@ -91,28 +89,15 @@ func StorageGetPlatformInterface() gin.HandlerFunc {
 				context.Abort()
 				return
 			}
-			queryStorage, result := database.StorageFind(requestStorageID)
-			if result.Code != errcode.OK || queryStorage == nil {
-				context.JSON(httpcode.ParamsError, gin.H{
-					"code": httpcode.ParamsError,
-					"msg":  "存储策略不存在",
-				})
-				context.Abort()
-				return
-			}
-			var configLocalPath defstorage.ConfigLocalPath
-			err := json.Unmarshal([]byte(queryStorage.Config), &configLocalPath)
-			if err != nil {
+			// 3.2、从缓存读取
+			prefabStorage := storage.Cache().GetStorage(requestStorageID)
+			if prefabStorage == nil {
 				context.JSON(httpcode.InternalError, gin.H{
 					"code": httpcode.InternalError,
-					"msg":  "存储策略配置有误",
+					"msg":  "存储策略加载失败",
 				})
 				context.Abort()
 				return
-			}
-			// 3.2、实例化
-			prefabStorage := storage.PlatformInterfaceLocal{
-				Root: configLocalPath.Path,
 			}
 			context.Set(apimiddleware.KeyStorage, prefabStorage)
 			// 2.3、继续请求

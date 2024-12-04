@@ -380,4 +380,22 @@ func RegisterFile(server *gin.Engine) {
 		},
 	)
 
+	/* 文件 - 生成下载链接 */
+	server.POST(
+		"/api/file/v1/generate_download_url",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+
+		},
+	)
+
+	/* 文件 - 透过下载链接下载文件 */
+	server.POST(
+		"/api/file/v1/download",
+		apifilemiddleware.StorageGetPlatformInterface(),
+		func(context *gin.Context) {
+
+		},
+	)
+
 }
